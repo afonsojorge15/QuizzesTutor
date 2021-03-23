@@ -477,7 +477,7 @@ class CreateQuestionTest extends SpockTest {
         when: "are created questions"
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
-        then:
+        then: "relevance remains unchanged"
         questionRepository.count() == 1L
         def result = questionRepository.findAll().get(0)
         result.getId() != null
@@ -528,7 +528,7 @@ class CreateQuestionTest extends SpockTest {
         when: "are created questions"
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
-        then: "the correct question is inside the repository"
+        then: "exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_CORRECT_OPTION_NEEDED
     }
