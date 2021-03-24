@@ -70,6 +70,32 @@ class UpdateQuestionTest extends SpockTest {
         optionRepository.save(optionKO)
     }
 
+    def "update question with relevance options"() {
+        given: 'a question'
+        def questionDto = new QuestionDto(question)
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        def optionDto = new OptionDto(optionOK)
+        optionDto.setRelevance(3)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+        optionDto = new OptionDto(optionKO)
+        optionDto.setRelevance(5)
+        options.add(optionDto)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+
+        when:
+        questionService.updateQuestion(question.getId(), questionDto)
+
+        then: "relevance values are updated"
+        questionRepository.count() == 1L
+        def result = questionRepository.findAll().get(0)
+        result.getQuestionDetails().getOptions().size() == 2
+        def resOptionOne = result.getQuestionDetails().getOptions().get(0)
+        resOptionOne.getRelevance() == 3
+        def resOptionTwo = result.getQuestionDetails().getOptions().get(1)
+        resOptionTwo.getRelevance() == 5
+    }
+
     def "update a question"() {
         given: "a changed question"
         def questionDto = new QuestionDto(question)
@@ -144,9 +170,37 @@ class UpdateQuestionTest extends SpockTest {
         when:
         questionService.updateQuestion(question.getId(), questionDto)
 
-        then: "the question an exception is thrown"
+        then: "both options remain correct"
+        questionRepository.count() == 1L
+        def result = questionRepository.findAll().get(0)
+        def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
+        resOptionOne.isCorrect()
+        def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
+        resOptionTwo.isCorrect()
+    }
+
+    def "update question with two options false"() {
+        given: 'a question'
+        def questionDto = new QuestionDto(question)
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+
+        def optionDto = new OptionDto(optionOK)
+        optionDto.setContent(OPTION_2_CONTENT)
+        optionDto.setCorrect(false)
+        def options = new ArrayList<OptionDto>()
+        options.add(optionDto)
+        optionDto = new OptionDto(optionKO)
+        optionDto.setContent(OPTION_1_CONTENT)
+        optionDto.setCorrect(false)
+        options.add(optionDto)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+
+        when:
+        questionService.updateQuestion(question.getId(), questionDto)
+
+        then: "exception is thrown"
         def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.ONE_CORRECT_OPTION_NEEDED
+        exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_CORRECT_OPTION_NEEDED
     }
 
     def "update correct option in a question with answers"() {
