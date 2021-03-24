@@ -37,8 +37,8 @@ public class MultipleChoiceQuestion extends QuestionDetails {
     }
 
     public void setOptions(List<OptionDto> options) {
-        if (options.stream().filter(OptionDto::isCorrect).count() != 1) {
-            throw new TutorException(ONE_CORRECT_OPTION_NEEDED);
+        if (options.stream().filter(OptionDto::isCorrect).count() < 1) {
+            throw new TutorException(AT_LEAST_ONE_CORRECT_OPTION_NEEDED);
         }
 
         int index = 0;
@@ -55,6 +55,7 @@ public class MultipleChoiceQuestion extends QuestionDetails {
 
                 option.setContent(optionDto.getContent());
                 option.setCorrect(optionDto.isCorrect());
+                option.setRelevance(optionDto.getRelevance());
             }
         }
     }
