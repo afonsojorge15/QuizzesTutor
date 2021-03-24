@@ -160,3 +160,4 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return !result.isEmpty() ? result : "-";
     }
 }
+
