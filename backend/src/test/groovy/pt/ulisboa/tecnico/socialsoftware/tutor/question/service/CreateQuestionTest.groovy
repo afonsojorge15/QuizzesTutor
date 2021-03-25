@@ -8,8 +8,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.CodeFillInQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.CodeOrderQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.OpenAnswerQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.*
 import spock.lang.Unroll
+
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 
@@ -483,6 +485,7 @@ class CreateQuestionTest extends SpockTest {
         then: "exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.INVALID_ANSWER
+
 
     }
 
