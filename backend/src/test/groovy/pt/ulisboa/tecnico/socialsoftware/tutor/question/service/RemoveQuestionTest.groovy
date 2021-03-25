@@ -141,6 +141,30 @@ class RemoveQuestionTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.CANNOT_DELETE_SUBMITTED_QUESTION
     }
 
+    def "remove a question from a quiz without image"() {
+        given: "a question with answers"
+        Quiz quiz = new Quiz()
+        quiz.setKey(1)
+        quiz.setTitle(QUIZ_TITLE)
+        quiz.setType(Quiz.QuizType.PROPOSED.toString())
+        quiz.setAvailableDate(LOCAL_DATE_BEFORE)
+        quiz.setCourseExecution(externalCourseExecution)
+        quiz.setOneWay(true)
+        quizRepository.save(quiz)
+
+        QuizQuestion quizQuestion= new QuizQuestion()
+        quizQuestion.setQuiz(quiz)
+        quizQuestion.setQuestion(question)
+        quizQuestionRepository.save(quizQuestion)
+
+        when:
+        questionService.removeQuestion(question.getId())
+
+        then: "the question an exception is thrown"
+        def exception = thrown(TutorException)
+        exception.getErrorMessage() == ErrorMessage.QUESTION_IS_USED_IN_QUIZ
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
