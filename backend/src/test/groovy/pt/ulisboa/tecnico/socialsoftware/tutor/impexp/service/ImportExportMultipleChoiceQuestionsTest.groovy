@@ -36,7 +36,6 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         optionDto1.setSequence(2)
         optionDto1.setRelevance(5)
         optionDto1.setContent(OPTION_1_CONTENT)
-        optionDto1.setCorrect(true)
         def options = new ArrayList<OptionDto>()
         def optionDto2 = new OptionDto()
         optionDto2.setSequence(1)
@@ -46,9 +45,6 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         options.add(optionDto)
         options.add(optionDto2)
         options.add(optionDto1)
-        println(optionDto.getRelevance())
-        println(optionDto2.getRelevance())
-        println(optionDto1.getRelevance())
         questionDto.getQuestionDetailsDto().setOptions(options)
 
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
@@ -80,11 +76,11 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         def optionThreeResult = questionResult.getQuestionDetailsDto().getOptions().get(2)
         optionOneResult.getSequence() + optionTwoResult.getSequence() == 1
         optionThreeResult.getRelevance() == 5
-        optionTwoResult.getRelevance() == 3
+        optionTwoResult.getRelevance() == 0
         optionOneResult.getContent() == OPTION_1_CONTENT
         optionTwoResult.getContent() == OPTION_1_CONTENT
         !(optionOneResult.isCorrect() && optionTwoResult.isCorrect())
-        optionOneResult.isCorrect() || optionTwoResult.isCorrect() || optionThreeResult.isCorrect()
+        optionOneResult.isCorrect() || optionTwoResult.isCorrect()
     }
 
 
