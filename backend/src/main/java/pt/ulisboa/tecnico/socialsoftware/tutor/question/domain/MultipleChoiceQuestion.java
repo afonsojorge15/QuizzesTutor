@@ -122,6 +122,16 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return new MultipleChoiceQuestionDto(this);
     }
 
+    public List<Option> getCorrectAnswers(){
+        List<Option> aux = new ArrayList<>();
+        for (Option option : options){
+            if (option.isCorrect()){
+                aux.add(option);
+            }
+        }
+        return aux;
+    }
+
     public Integer getCorrectAnswer() {
         return this.getOptions()
                 .stream()

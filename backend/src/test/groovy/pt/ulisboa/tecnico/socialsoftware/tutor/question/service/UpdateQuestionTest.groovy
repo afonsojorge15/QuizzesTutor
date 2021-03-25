@@ -90,13 +90,14 @@ class UpdateQuestionTest extends SpockTest {
         questionRepository.count() == 1L
         def result = questionRepository.findAll().get(0)
         result.getQuestionDetails().getOptions().size() == 2
+        result.getQuestionDetails().getCorrectAnswers().size() == 2
         def resOptionOne = result.getQuestionDetails().getOptions().get(0)
         resOptionOne.getRelevance() == 3
         def resOptionTwo = result.getQuestionDetails().getOptions().get(1)
         resOptionTwo.getRelevance() == 5
     }
 
-    def "update a question"() {
+    def "update a question and testing correct and relevance relation"() {
         given: "a changed question"
         def questionDto = new QuestionDto(question)
         questionDto.setTitle(QUESTION_2_TITLE)
@@ -116,7 +117,7 @@ class UpdateQuestionTest extends SpockTest {
         when:
         questionService.updateQuestion(question.getId(), questionDto)
 
-        then: "the question is changed"
+        then: "the question is changed accordingly"
         questionRepository.count() == 1L
         def result = questionRepository.findAll().get(0)
         result.getId() == question.getId()
@@ -132,10 +133,12 @@ class UpdateQuestionTest extends SpockTest {
         result.getQuestionDetails().getOptions().size() == 2
         def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
         resOptionOne.getContent() == OPTION_2_CONTENT
+        resOptionOne.getRelevance() == 0
         !resOptionOne.isCorrect()
         def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
         resOptionTwo.getContent() == OPTION_1_CONTENT
         resOptionTwo.isCorrect()
+        resOptionTwo.getRelevance() == 1
     }
 
     def "update question with missing data"() {
@@ -173,6 +176,7 @@ class UpdateQuestionTest extends SpockTest {
         then: "both options remain correct"
         questionRepository.count() == 1L
         def result = questionRepository.findAll().get(0)
+        result.getQuestionDetails().getCorrectAnswers().size() == 2
         def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
         resOptionOne.isCorrect()
         def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)

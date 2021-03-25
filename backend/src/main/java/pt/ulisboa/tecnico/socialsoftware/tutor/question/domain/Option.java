@@ -78,6 +78,9 @@ public class Option implements DomainEntity {
         if (this.relevance < 1 && correct){
             this.relevance = 1;
         }
+        else if (!correct){
+            this.relevance = 0;
+        }
         this.correct = correct;
     }
 
@@ -87,6 +90,12 @@ public class Option implements DomainEntity {
     }
 
     public void setRelevance(Integer relevance){
+        if (relevance > 0){
+            this.correct = true;
+        }
+        else if (relevance == 0){
+            this.correct = false;
+        }
         this.relevance = relevance;
     }
 

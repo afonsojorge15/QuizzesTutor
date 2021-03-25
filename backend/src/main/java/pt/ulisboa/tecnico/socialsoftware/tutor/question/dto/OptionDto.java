@@ -48,7 +48,10 @@ public class OptionDto implements Serializable {
 
     public void setCorrect(boolean correct) {
         if (this.relevance < 1 && correct){
-            relevance = 1;
+            this.relevance = 1;
+        }
+        else if (!correct){
+            this.relevance = 0;
         }
         this.correct = correct;
     }
@@ -56,6 +59,12 @@ public class OptionDto implements Serializable {
     public Integer getRelevance(){ return relevance; }
 
     public void setRelevance(Integer relevance){
+        if (relevance > 0){
+            this.correct = true;
+        }
+        else if (relevance == 0){
+            this.correct = false;
+        }
         this.relevance = relevance;
     }
 
@@ -74,6 +83,6 @@ public class OptionDto implements Serializable {
                 ", correct=" + correct +
                 ", relevance=" + relevance +
                 ", content='" + content + '\'' +
-                '}';
+        '}';
     }
 }
