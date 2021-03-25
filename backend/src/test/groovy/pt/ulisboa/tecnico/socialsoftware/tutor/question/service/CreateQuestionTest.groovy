@@ -442,7 +442,7 @@ class CreateQuestionTest extends SpockTest {
         resOption2.isCorrect()
     }
 
-    def "create and check relevance of 4 options"() {
+    def "create and check relevance of 4 options and if they become correct"() {
         given: "a questionDto"
         def questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_1_TITLE)
@@ -453,7 +453,6 @@ class CreateQuestionTest extends SpockTest {
         def option1Dto = new OptionDto()
         option1Dto.setContent(OPTION_1_CONTENT)
         option1Dto.setRelevance(2)
-        option1Dto.setCorrect(true)
         def option2Dto = new OptionDto()
         option2Dto.setContent(OPTION_1_CONTENT)
         option2Dto.setRelevance(4)
@@ -484,14 +483,20 @@ class CreateQuestionTest extends SpockTest {
         result.getQuestionDetails().getOptions().size() == 5
         def resOption1 = result.getQuestionDetails().getOptions().get(0)
         resOption1.getRelevance() == 2
+        resOption1.isCorrect()
         def resOption2 = result.getQuestionDetails().getOptions().get(1)
         resOption2.getRelevance() == 4
+        resOption2.isCorrect()
         def resOption3 = result.getQuestionDetails().getOptions().get(2)
         resOption3.getRelevance() == 4
+        resOption3.isCorrect()
         def resOption4 = result.getQuestionDetails().getOptions().get(3)
         resOption4.getRelevance() == 1
+        resOption4.isCorrect()
         def resOption5 = result.getQuestionDetails().getOptions().get(4)
         resOption5.getRelevance() == 2
+        resOption5.isCorrect()
+        result.getQuestionDetails().getCorrectAnswers().size() == 5
     }
 
     def "create multiple choice with zero correct answers"() {
