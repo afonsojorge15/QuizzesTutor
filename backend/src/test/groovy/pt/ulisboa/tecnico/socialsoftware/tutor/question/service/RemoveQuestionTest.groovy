@@ -149,7 +149,6 @@ class RemoveQuestionTest extends SpockTest {
         questionService.removeQuestion(question.getId())
 
         then: "the question is removeQuestion"
-        optionKO.isCorrect()
         questionRepository.count() == 0L
         imageRepository.count() == 0L
         optionRepository.count() == 0L
@@ -163,7 +162,6 @@ class RemoveQuestionTest extends SpockTest {
         questionService.removeQuestion(question.getId())
 
         then: "the question is removeQuestion"
-        optionOK.getRelevance() == 2
         questionRepository.count() == 0L
         imageRepository.count() == 0L
         optionRepository.count() == 0L
