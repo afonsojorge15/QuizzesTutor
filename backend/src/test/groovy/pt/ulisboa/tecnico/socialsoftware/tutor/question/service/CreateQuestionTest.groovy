@@ -410,7 +410,7 @@ class CreateQuestionTest extends SpockTest {
         questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
         and: 'an answer'
         def  answer = new String(ANSWER_STRING_CONTENT)
-        questionDto.getQuestionDetailsDto().setAnwer(anwer)
+        questionDto.getQuestionDetailsDto().setAnwer(answer)
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
@@ -429,7 +429,7 @@ class CreateQuestionTest extends SpockTest {
         questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
         and: 'an answer'
         def  answer = ""
-        questionDto.getQuestionDetailsDto().setAnwer(anwer)
+        questionDto.getQuestionDetailsDto().setAnwer(answer)
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
@@ -454,7 +454,7 @@ class CreateQuestionTest extends SpockTest {
         questionDto.setImage(image)
         and: 'an answer'
         def  answer = new String(ANSWER_STRING_CONTENT)
-        questionDto.getQuestionDetailsDto().setAnwer(anwer)
+        questionDto.getQuestionDetailsDto().setAnwer(answer)
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
@@ -478,7 +478,7 @@ class CreateQuestionTest extends SpockTest {
         questionDto.setImage(image)
         and: 'an answer'
         def  answer = ""
-        questionDto.getQuestionDetailsDto().setAnwer(anwer)
+        questionDto.getQuestionDetailsDto().setAnwer(answer)
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
