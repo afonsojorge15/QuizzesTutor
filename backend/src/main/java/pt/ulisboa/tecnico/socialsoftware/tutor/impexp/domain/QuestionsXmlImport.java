@@ -110,6 +110,9 @@ public class QuestionsXmlImport {
             case Question.QuestionTypes.CODE_ORDER_QUESTION:
                 questionDetailsDto = importCodeOrderQuestion(questionElement);
                 break;
+            case Question.QuestionTypes.ITEM_COMBINATION_QUESTION:
+                questionDetailsDto = importItemCombinationQuestion(questionElement);
+                break;
             default:
                 throw new TutorException(QUESTION_TYPE_NOT_IMPLEMENTED, type);
         }
@@ -124,6 +127,7 @@ public class QuestionsXmlImport {
         List<OptionDto> optionDtos = new ArrayList<>();
         for (Element optionElement : questionElement.getChild("options").getChildren("option")) {
             Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
+            Integer optionRelevance = Integer.valueOf(optionElement.getAttributeValue("relevance"));
             String optionContent = optionElement.getAttributeValue("content");
             boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
 
@@ -131,6 +135,7 @@ public class QuestionsXmlImport {
             optionDto.setSequence(optionSequence);
             optionDto.setContent(optionContent);
             optionDto.setCorrect(correct);
+            optionDto.setRelevance(optionRelevance);
 
             optionDtos.add(optionDto);
         }
@@ -183,5 +188,54 @@ public class QuestionsXmlImport {
         questionDto.setCodeOrderSlots(slots);
         return questionDto;
     }
+
+    private QuestionDetailsDto importItemCombinationQuestion(Element questionElement) {
+
+
+
+        List<ItemDto> itemDtos = new ArrayList<>();
+        for (Element itemsLeftElement : questionElement.getChild("itemLeft").getChildren("item")) {
+            Integer itemLeftSequence = Integer.valueOf(itemsLeftElement.getAttributeValue("sequence"));
+            String itemLeftContent = itemsLeftElement.getAttributeValue("content");
+            Boolean itemLeftGroup = Boolean.parseBoolean(itemsLeftElement.getAttributeValue("group"));
+
+
+            ItemDto itemDto = new ItemDto();
+            itemDto .setSequence(itemLeftSequence);
+            itemDto .setContent(itemLeftContent);
+            itemDto .setGroup(itemLeftGroup);
+
+            itemDtos.add(itemDto);
+        }
+        List<ItemDto> itemDtos1 = new ArrayList<>();
+        for (Element itemsRightElement : questionElement.getChild("itemLeft").getChildren("item")) {
+            Integer itemRightSequence = Integer.valueOf(itemsRightElement.getAttributeValue("sequence"));
+            String itemRightContent = itemsRightElement.getAttributeValue("content");
+            Boolean itemRightGroup = Boolean.parseBoolean(itemsRightElement.getAttributeValue("group"));
+
+
+            ItemDto itemDto1 = new ItemDto();
+            itemDto1 .setSequence(itemRightSequence);
+            itemDto1 .setContent(itemRightContent);
+            itemDto1 .setGroup(itemRightGroup);
+
+            itemDtos1.add(itemDto1);
+        }
+
+        List<LinkDto> linkDtos = new ArrayList<>();
+
+        ItemCombinationQuestionDto itemCombinationQuestionDto = new ItemCombinationQuestionDto();
+        itemCombinationQuestionDto.setItemsLeft(itemDtos);
+        itemCombinationQuestionDto.setItemsLeft(itemDtos1);
+        itemCombinationQuestionDto.setLinkS(linkDtos);
+        return itemCombinationQuestionDto;
+
+
+
+
+    }
+
+
+
 
 }

@@ -7,6 +7,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.ImageDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.MultipleChoiceQuestionDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OpenAnswerQuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.QuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
@@ -21,31 +22,16 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         questionDto.setTitle(QUESTION_1_TITLE)
         questionDto.setContent(QUESTION_1_CONTENT)
         questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
 
         def image = new ImageDto()
         image.setUrl(IMAGE_1_URL)
         image.setWidth(20)
         questionDto.setImage(image)
 
-        def optionDto = new OptionDto()
-        def optionDto1 = new OptionDto()
-        optionDto.setSequence(0)
-        optionDto.setContent(OPTION_1_CONTENT)
-        optionDto.setCorrect(true)
-        optionDto1.setSequence(2)
-        optionDto1.setRelevance(5)
-        optionDto1.setContent(OPTION_1_CONTENT)
-        def options = new ArrayList<OptionDto>()
-        def optionDto2 = new OptionDto()
-        optionDto2.setSequence(1)
-        optionDto2.setRelevance(3)
-        optionDto2.setContent(OPTION_1_CONTENT)
-        optionDto2.setCorrect(false)
-        options.add(optionDto)
-        options.add(optionDto2)
-        options.add(optionDto1)
-        questionDto.getQuestionDetailsDto().setOptions(options)
+        def answerDto = new AnswerDto()
+        answerDto.setContent(ANSWER_1_CONTENT)
+        questionDto.getQuestionDetailsDto().setAnswer(answerDto)
 
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
     }
@@ -70,20 +56,8 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         def imageResult = questionResult.getImage()
         imageResult.getWidth() == 20
         imageResult.getUrl() == IMAGE_1_URL
-        questionResult.getQuestionDetailsDto().getOptions().size() == 3
-        def optionOneResult = questionResult.getQuestionDetailsDto().getOptions().get(0)
-        def optionTwoResult = questionResult.getQuestionDetailsDto().getOptions().get(1)
-        def optionThreeResult = questionResult.getQuestionDetailsDto().getOptions().get(2)
-        optionOneResult.getSequence() + optionTwoResult.getSequence() == 1
-        optionThreeResult.getRelevance() == 5
-        optionTwoResult.getRelevance() == 0
-        optionOneResult.getContent() == OPTION_1_CONTENT
-        optionTwoResult.getContent() == OPTION_1_CONTENT
-        !(optionOneResult.isCorrect() && optionTwoResult.isCorrect())
-        optionOneResult.isCorrect() || optionTwoResult.isCorrect()
+        questionResult.getQuestionDetails().getAnswer().getContent() == ANSWER_1_CONTENT
     }
-
-
 
     def 'export to latex'() {
         when:
@@ -94,7 +68,5 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
     }
 
     @TestConfiguration
-    static class LocalBeanConfiguration extends BeanConfiguration {}
-
-
+    static class LocalBeanConfiguration3 extends BeanConfiguration {}
 }

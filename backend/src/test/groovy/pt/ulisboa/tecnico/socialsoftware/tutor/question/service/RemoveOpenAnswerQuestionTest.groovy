@@ -7,10 +7,11 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.MultipleChoiceQuestion
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.OpenAnswerQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OpenAnswerQuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.questionsubmission.domain.QuestionSubmission
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz
@@ -19,10 +20,8 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthUser
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
 
 @DataJpaTest
-class RemoveQuestionTest extends SpockTest {
+class RemoveOpenAnswerQuestionTest extends SpockTest {
     def question
-    def optionOK
-    def optionKO
     def teacher
 
     def setup() {
@@ -36,28 +35,14 @@ class RemoveQuestionTest extends SpockTest {
         question.setTitle(QUESTION_1_TITLE)
         question.setContent(QUESTION_1_CONTENT)
         question.setStatus(Question.Status.AVAILABLE)
-        question.setNumberOfAnswers(2)
-        question.setNumberOfCorrect(1)
         question.setCourse(externalCourse)
         question.setImage(image)
-        def questionDetails = new MultipleChoiceQuestion()
+        def questionDetails = new OpenAnswerQuestionDto()
         question.setQuestionDetails(questionDetails)
         questionDetailsRepository.save(questionDetails)
         questionRepository.save(question)
 
-        optionOK = new Option()
-        optionOK.setContent(OPTION_1_CONTENT)
-        optionOK.setCorrect(true)
-        optionOK.setSequence(0)
-        optionOK.setQuestionDetails(questionDetails)
-        optionRepository.save(optionOK)
 
-        optionKO = new Option()
-        optionKO.setContent(OPTION_1_CONTENT)
-        optionKO.setCorrect(false)
-        optionKO.setSequence(1)
-        optionKO.setQuestionDetails(questionDetails)
-        optionRepository.save(optionKO)
     }
 
     def "remove a question"() {
@@ -67,10 +52,9 @@ class RemoveQuestionTest extends SpockTest {
         then: "the question is removeQuestion"
         questionRepository.count() == 0L
         imageRepository.count() == 0L
-        optionRepository.count() == 0L
     }
 
-    def "remove a question used in a quiz"() {
+    def "remove an open answer question used in a quiz"() {
         given: "a question with answers"
         Quiz quiz = new Quiz()
         quiz.setKey(1)
@@ -94,7 +78,7 @@ class RemoveQuestionTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.QUESTION_IS_USED_IN_QUIZ
     }
 
-    def "remove a question that has topics"() {
+    def "remove an open answer question that has topics"() {
         given: 'a question with topics'
         def topicDto = new TopicDto()
         topicDto.setName("name1")
@@ -114,13 +98,12 @@ class RemoveQuestionTest extends SpockTest {
         then:
         questionRepository.count() == 0L
         imageRepository.count() == 0L
-        optionRepository.count() == 0L
         topicRepository.count() == 2L
         topicOne.getQuestions().size() == 0
         topicTwo.getQuestions().size() == 0
     }
 
-    def "remove a question that was submitted"() {
+    def "remove an open answer question that was submitted"() {
         given: "a student"
         def student = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL,
                 User.Role.STUDENT, false, AuthUser.Type.TECNICO)
@@ -141,33 +124,7 @@ class RemoveQuestionTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.CANNOT_DELETE_SUBMITTED_QUESTION
     }
 
-    def "remove a question with two correct answers"() {
-        given: "a question with two correct answers"
-        optionKO.setCorrect(true)
-
-        when:
-        questionService.removeQuestion(question.getId())
-
-        then: "the question is removeQuestion"
-        questionRepository.count() == 0L
-        imageRepository.count() == 0L
-        optionRepository.count() == 0L
-    }
-
-    def "remove a question with relevance"() {
-        given: "a question with relevance"
-        optionOK.setRelevance(2)
-
-        when:
-        questionService.removeQuestion(question.getId())
-
-        then: "the question is removeQuestion"
-        questionRepository.count() == 0L
-        imageRepository.count() == 0L
-        optionRepository.count() == 0L
-    }
-  
-    def "remove a question from a quiz without image"() {
+    def "remove an open answer question from a quiz without image"() {
         given: "a question with answers"
         Quiz quiz = new Quiz()
         quiz.setKey(1)
@@ -192,5 +149,5 @@ class RemoveQuestionTest extends SpockTest {
     }
 
     @TestConfiguration
-    static class LocalBeanConfiguration extends BeanConfiguration {}
+    static class LocalBeanConfiguration2 extends BeanConfiguration {}
 }

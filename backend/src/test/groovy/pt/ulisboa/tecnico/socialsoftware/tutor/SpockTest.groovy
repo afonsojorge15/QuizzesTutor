@@ -119,6 +119,9 @@ class SpockTest extends Specification {
     public static final String OPTION_1_CONTENT = "Option 1 Content"
     public static final String OPTION_2_CONTENT = "Option 2 Content"
 
+    public static final String ITEM_1_CONTENT = "Item 1 Content"
+    public static final String ITEM_2_CONTENT = "Item 2 Content"
+
     public static final String ROLE_STUDENT = "ROLE_STUDENT"
     public static final String ROLE_TEACHER = "ROLE_TEACHER"
     public static final String ROLE_ADMIN = "ROLE_ADMIN"
@@ -169,6 +172,12 @@ class SpockTest extends Specification {
 
     @Autowired
     OptionRepository optionRepository
+
+    @Autowired
+    ItemRepository itemRepository
+
+    @Autowired
+    LinkRepository linkRepository
 
     @Autowired
     QuestionAnswerRepository questionAnswerRepository
