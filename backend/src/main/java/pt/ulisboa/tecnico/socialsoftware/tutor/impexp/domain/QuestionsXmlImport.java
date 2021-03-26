@@ -127,6 +127,7 @@ public class QuestionsXmlImport {
         List<OptionDto> optionDtos = new ArrayList<>();
         for (Element optionElement : questionElement.getChild("options").getChildren("option")) {
             Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
+            Integer optionRelevance = Integer.valueOf(optionElement.getAttributeValue("relevance"));
             String optionContent = optionElement.getAttributeValue("content");
             boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
 
@@ -134,6 +135,7 @@ public class QuestionsXmlImport {
             optionDto.setSequence(optionSequence);
             optionDto.setContent(optionContent);
             optionDto.setCorrect(correct);
+            optionDto.setRelevance(optionRelevance);
 
             optionDtos.add(optionDto);
         }

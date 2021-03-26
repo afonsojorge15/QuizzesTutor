@@ -394,7 +394,151 @@ class CreateQuestionTest extends SpockTest {
         then: "exception is thrown"
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_THREE_SLOTS_NEEDED
+
     }
+
+    def "create multiple choice with two correct answers"() {
+        given: "a questionDto"
+        def questionDto = new QuestionDto()
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        and: 'a optionId'
+        def option1Dto = new OptionDto()
+        option1Dto.setContent(OPTION_1_CONTENT)
+        option1Dto.setCorrect(true)
+        def option2Dto = new OptionDto()
+        option2Dto.setContent(OPTION_1_CONTENT)
+        option2Dto.setCorrect(true)
+        def option3Dto = new OptionDto()
+        option3Dto.setContent(OPTION_1_CONTENT)
+        option3Dto.setCorrect(false)
+        def option4Dto = new OptionDto()
+        option4Dto.setCorrect(false)
+        option4Dto.setContent(OPTION_1_CONTENT)
+        def option5Dto = new OptionDto()
+        option5Dto.setCorrect(false)
+        option5Dto.setContent(OPTION_1_CONTENT)
+        def options = new ArrayList<OptionDto>()
+        options.add(option1Dto)
+        options.add(option2Dto)
+        options.add(option3Dto)
+        options.add(option4Dto)
+        options.add(option5Dto)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+
+        when: "are created questions"
+        questionService.createQuestion(externalCourse.getId(), questionDto)
+
+        then: "the correct question is inside the repository"
+        questionRepository.count() == 1L
+        def result = questionRepository.findAll().get(0)
+        result.getId() != null
+        result.getQuestionDetails().getOptions().size() == 5
+        def resOption1 = result.getQuestionDetails().getOptions().get(0)
+        resOption1.isCorrect()
+        def resOption2 = result.getQuestionDetails().getOptions().get(1)
+        resOption2.isCorrect()
+    }
+
+    def "create and check relevance of 4 options and if they become correct"() {
+        given: "a questionDto"
+        def questionDto = new QuestionDto()
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        and: 'a optionId'
+        def option1Dto = new OptionDto()
+        option1Dto.setContent(OPTION_1_CONTENT)
+        option1Dto.setRelevance(2)
+        def option2Dto = new OptionDto()
+        option2Dto.setContent(OPTION_1_CONTENT)
+        option2Dto.setRelevance(4)
+        def option3Dto = new OptionDto()
+        option3Dto.setContent(OPTION_1_CONTENT)
+        option3Dto.setRelevance(4)
+        def option4Dto = new OptionDto()
+        option4Dto.setContent(OPTION_1_CONTENT)
+        option4Dto.setRelevance(1)
+        def option5Dto = new OptionDto()
+        option5Dto.setContent(OPTION_1_CONTENT)
+        option5Dto.setRelevance(2)
+        def options = new ArrayList<OptionDto>()
+        options.add(option1Dto)
+        options.add(option2Dto)
+        options.add(option3Dto)
+        options.add(option4Dto)
+        options.add(option5Dto)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+
+        when: "are created questions"
+        questionService.createQuestion(externalCourse.getId(), questionDto)
+
+        then: "relevance remains unchanged"
+        questionRepository.count() == 1L
+        def result = questionRepository.findAll().get(0)
+        result.getId() != null
+        result.getQuestionDetails().getOptions().size() == 5
+        def resOption1 = result.getQuestionDetails().getOptions().get(0)
+        resOption1.getRelevance() == 2
+        resOption1.isCorrect()
+        def resOption2 = result.getQuestionDetails().getOptions().get(1)
+        resOption2.getRelevance() == 4
+        resOption2.isCorrect()
+        def resOption3 = result.getQuestionDetails().getOptions().get(2)
+        resOption3.getRelevance() == 4
+        resOption3.isCorrect()
+        def resOption4 = result.getQuestionDetails().getOptions().get(3)
+        resOption4.getRelevance() == 1
+        resOption4.isCorrect()
+        def resOption5 = result.getQuestionDetails().getOptions().get(4)
+        resOption5.getRelevance() == 2
+        resOption5.isCorrect()
+        result.getQuestionDetails().getCorrectAnswers().size() == 5
+    }
+
+    def "create multiple choice with zero correct answers"() {
+        given: "a questionDto"
+        def questionDto = new QuestionDto()
+        questionDto.setTitle(QUESTION_1_TITLE)
+        questionDto.setContent(QUESTION_1_CONTENT)
+        questionDto.setStatus(Question.Status.AVAILABLE.name())
+        questionDto.setQuestionDetailsDto(new MultipleChoiceQuestionDto())
+        and: 'a optionId'
+        def option1Dto = new OptionDto()
+        option1Dto.setContent(OPTION_1_CONTENT)
+        option1Dto.setCorrect(false)
+        def option2Dto = new OptionDto()
+        option2Dto.setContent(OPTION_1_CONTENT)
+        option2Dto.setCorrect(false)
+        def option3Dto = new OptionDto()
+        option3Dto.setContent(OPTION_1_CONTENT)
+        option3Dto.setCorrect(false)
+        def option4Dto = new OptionDto()
+        option4Dto.setCorrect(false)
+        option4Dto.setContent(OPTION_1_CONTENT)
+        def option5Dto = new OptionDto()
+        option5Dto.setCorrect(false)
+        option5Dto.setContent(OPTION_1_CONTENT)
+        def options = new ArrayList<OptionDto>()
+        options.add(option1Dto)
+        options.add(option2Dto)
+        options.add(option3Dto)
+        options.add(option4Dto)
+        options.add(option5Dto)
+        questionDto.getQuestionDetailsDto().setOptions(options)
+
+        when: "are created questions"
+        questionService.createQuestion(externalCourse.getId(), questionDto)
+
+        then: "exception is thrown"
+        def exception = thrown(TutorException)
+        exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_CORRECT_OPTION_NEEDED
+    }
+
+
 
 
     @Unroll
