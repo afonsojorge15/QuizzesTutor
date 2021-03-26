@@ -90,7 +90,7 @@ class UpdateItemCombinationQuestion extends SpockTest {
         def questionDto = new QuestionDto(question)
         questionDto.setTitle(QUESTION_2_TITLE)
         questionDto.setContent(QUESTION_2_CONTENT)
-        questionDto.setQuestionDetailsDto(new ItemCombinationQuestion())
+        questionDto.setQuestionDetailsDto(new ItemCombinationQuestionDto())
         and: '2 changed options'
 
         def items = new ArrayList<ItemDto>()
@@ -107,12 +107,13 @@ class UpdateItemCombinationQuestion extends SpockTest {
 
         def links = new ArrayList<LinkDto>()
         def linkDto = new LinkDto(link)
-        linkDto.removeLink(itemDto1,itemDto2)
+        linkDto.removeLink()
         linkDto.setLink(itemDto1, itemDto3)
 
         links.add(linkDto)
 
-        questionDto.getQuestionDetailsDto().setItems(items)
+        questionDto.getQuestionDetailsDto().setItemsL(items)
+        questionDto.getQuestionDetailsDto().setItemsR(items)
         questionDto.getQuestionDetailsDto().setLinks(links)
 
         when:
