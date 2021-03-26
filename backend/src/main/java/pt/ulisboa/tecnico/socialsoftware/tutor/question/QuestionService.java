@@ -57,6 +57,12 @@ public class QuestionService {
     private ImageRepository imageRepository;
 
     @Autowired
+    private LinkRepository linkRepository;
+
+    @Autowired
+    private ItemRepository ItemRepository;
+
+    @Autowired
     private QuizQuestionRepository quizQuestionRepository;
 
     @Autowired
