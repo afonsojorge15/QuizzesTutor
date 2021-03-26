@@ -32,7 +32,7 @@ class ImportExportItemCombinationQuestionTest extends SpockTest {
     def item2
     def item3
     def user
-    def link
+
 
     def setup() {
 
