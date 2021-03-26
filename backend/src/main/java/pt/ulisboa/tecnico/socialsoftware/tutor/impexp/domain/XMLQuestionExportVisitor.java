@@ -130,6 +130,7 @@ public class XMLQuestionExportVisitor implements Visitor {
         Element optionElement = new Element("option");
 
         optionElement.setAttribute("sequence", String.valueOf(option.getSequence()));
+        optionElement.setAttribute("relevance", String.valueOf(option.getRelevance()));
         optionElement.setAttribute("content", option.getContent());
         optionElement.setAttribute("correct", String.valueOf(option.isCorrect()));
 
