@@ -43,8 +43,7 @@ class RemoveItemCombinationQuestion extends SpockTest {
         def questionDetails = new ItemCombinationQuestion()
         question.setQuestionDetails(questionDetails)
         questionDetailsRepository.save(questionDetails)
-        itemRepository.save(question)
-
+        questionRepository.save(question)
 
 
         itemOK = new Item()
@@ -69,3 +68,7 @@ class RemoveItemCombinationQuestion extends SpockTest {
         imageRepository.count() == 0L
         optionRepository.count() == 0L
     }
+
+    @TestConfiguration
+    static class LocalBeanConfiguration extends BeanConfiguration {}
+}
