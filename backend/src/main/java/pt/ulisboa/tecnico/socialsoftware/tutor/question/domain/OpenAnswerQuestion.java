@@ -14,6 +14,9 @@ import java.util.List;
 @DiscriminatorValue(Question.QuestionTypes.OPEN_ANSWER_QUESTION)
 public class OpenAnswerQuestion extends QuestionDetails {
 
+    // Grade and Answer is not supposed to be in the OpenAnswerQuestion class
+    // Does not include teachers' correct answer String
+    // Wrong use of JPA, shouldn't use OneToMany in fields such as Strings, only in other Entities
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.EAGER, orphanRemoval = true)
     private final String answer = "";
     private final int grade = 0;
