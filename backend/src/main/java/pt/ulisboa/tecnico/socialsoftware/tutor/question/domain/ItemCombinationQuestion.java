@@ -25,6 +25,7 @@ public class ItemCombinationQuestion extends QuestionDetails {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<Item> itemsRight = new ArrayList<>();
 
+    //Should have used @ManyToMany between Items instead of creating a new class Link
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "questionDetails", fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<Link> links = new ArrayList<>();
 
