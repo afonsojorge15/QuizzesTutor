@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.socialsoftware.tutor.question.domain;
 
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.*;
+
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
 import pt.ulisboa.tecnico.socialsoftware.tutor.impexp.domain.Visitor;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.Updator;
@@ -15,12 +16,13 @@ import java.util.stream.Collectors;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
+
 @Entity
 @DiscriminatorValue(Question.QuestionTypes.OPEN_ANSWER_QUESTION)
 public class OpenAnswerQuestion extends QuestionDetails {
 
-    private String _answer="";
 
+    private String _answer="";
 
     public OpenAnswerQuestion(Question question, OpenAnswerQuestionDto openAnswerQuestionDto) {
         super(question);
@@ -82,6 +84,7 @@ public class OpenAnswerQuestion extends QuestionDetails {
     }
 
     @Override
+
     public StatementAnswerDetailsDto getEmptyStatementAnswerDetailsDto() {
         return null;
     }
@@ -90,11 +93,12 @@ public class OpenAnswerQuestion extends QuestionDetails {
     public AnswerDetailsDto getEmptyAnswerDetailsDto() {
         return new AnswerDetailsDto() {
         };
+
     }
 
     @Override
     public QuestionDetailsDto getQuestionDetailsDto() {
         return new OpenAnswerQuestionDto(this);
     }
-
 }
+

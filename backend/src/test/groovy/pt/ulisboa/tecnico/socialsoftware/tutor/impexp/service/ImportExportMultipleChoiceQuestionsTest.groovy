@@ -17,6 +17,8 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
     def teacher
 
     def setup() {
+        createExternalCourseAndExecution()
+
         def questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_1_TITLE)
         questionDto.setContent(QUESTION_1_CONTENT)
@@ -29,16 +31,22 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         questionDto.setImage(image)
 
         def optionDto = new OptionDto()
+        def optionDto1 = new OptionDto()
         optionDto.setSequence(0)
         optionDto.setContent(OPTION_1_CONTENT)
         optionDto.setCorrect(true)
+        optionDto1.setSequence(2)
+        optionDto1.setRelevance(5)
+        optionDto1.setContent(OPTION_1_CONTENT)
         def options = new ArrayList<OptionDto>()
+        def optionDto2 = new OptionDto()
+        optionDto2.setSequence(1)
+        optionDto2.setRelevance(3)
+        optionDto2.setContent(OPTION_1_CONTENT)
+        optionDto2.setCorrect(false)
         options.add(optionDto)
-        optionDto = new OptionDto()
-        optionDto.setSequence(1)
-        optionDto.setContent(OPTION_1_CONTENT)
-        optionDto.setCorrect(false)
-        options.add(optionDto)
+        options.add(optionDto2)
+        options.add(optionDto1)
         questionDto.getQuestionDetailsDto().setOptions(options)
 
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
@@ -64,15 +72,20 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
         def imageResult = questionResult.getImage()
         imageResult.getWidth() == 20
         imageResult.getUrl() == IMAGE_1_URL
-        questionResult.getQuestionDetailsDto().getOptions().size() == 2
+        questionResult.getQuestionDetailsDto().getOptions().size() == 3
         def optionOneResult = questionResult.getQuestionDetailsDto().getOptions().get(0)
         def optionTwoResult = questionResult.getQuestionDetailsDto().getOptions().get(1)
+        def optionThreeResult = questionResult.getQuestionDetailsDto().getOptions().get(2)
         optionOneResult.getSequence() + optionTwoResult.getSequence() == 1
+        optionThreeResult.getRelevance() == 5
+        optionTwoResult.getRelevance() == 0
         optionOneResult.getContent() == OPTION_1_CONTENT
         optionTwoResult.getContent() == OPTION_1_CONTENT
         !(optionOneResult.isCorrect() && optionTwoResult.isCorrect())
         optionOneResult.isCorrect() || optionTwoResult.isCorrect()
     }
+
+
 
     def 'export to latex'() {
         when:
@@ -84,4 +97,6 @@ class ImportExportMultipleChoiceQuestionsTest extends SpockTest {
 
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
+
+
 }

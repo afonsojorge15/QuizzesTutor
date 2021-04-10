@@ -51,6 +51,7 @@ public enum ErrorMessage {
     USER_NOT_FOUND("User not found with id %d"),
     EXTERNAL_USER_NOT_FOUND("User not found with username %s"),
     COURSE_NOT_FOUND("Course not found with name %s"),
+    INVALID_COURSE("This is not an execution of course %s"),
     USER_ALREADY_ACTIVE("User is already active with username %s"),
     USER_IS_ACTIVE("User state is active: username %s"),
     INVALID_CONFIRMATION_TOKEN("Invalid confirmation token"),
@@ -59,6 +60,7 @@ public enum ErrorMessage {
 
     CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
 
+    QUESTION_KEY_ALREADY_EXISTS("Questions already exists with key %d"),
     QUESTION_OPTION_MISMATCH("Question %d does not have option %d"),
     QUESTION_ORDER_SLOT_MISMATCH("Question %d does not have slot %d"),
 
@@ -98,6 +100,7 @@ public enum ErrorMessage {
     USER_ALREDAY_ANSWERED_TOURNAMENT_QUIZ("User has already answered quiz of tournament: %s"),
     WRONG_TOURNAMENT_PASSWORD("Wrong tournament password for private tournament %d"),
 
+    LINK_BETWEEN_SAME_GROUP_ITEMS("Cant link 2 elements of the same group"),
     NO_CORRECT_OPTION("Question does not have a correct option"),
     NOT_ENOUGH_QUESTIONS("Not enough questions to create a quiz"),
     NOT_ENOUGH_QUESTIONS_TOURNAMENT("Not enough questions to create a quiz. One of the selected topics might not be available now. Please go check it"),

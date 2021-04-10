@@ -4,6 +4,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.OpenAnswerQuestio
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionDetails;
 
+
 import javax.persistence.Column;
 
 public class OpenAnswerQuestionDto extends QuestionDetailsDto {
@@ -15,9 +16,9 @@ public class OpenAnswerQuestionDto extends QuestionDetailsDto {
         this._answer = openAnswerQuestion.getAnswer();
     }
 
+
     public OpenAnswerQuestionDto() {
     }
-
 
     public void setAnswer(String answer){
         this._answer = answer;
@@ -32,11 +33,11 @@ public class OpenAnswerQuestionDto extends QuestionDetailsDto {
 
 
 
-
     @Override
     public QuestionDetails getQuestionDetails(Question question) {
         return new OpenAnswerQuestion(question, this);
     }
+
 
     @Override
     public void update(OpenAnswerQuestion question) {
