@@ -249,7 +249,6 @@ class UpdateQuestionTest extends SpockTest {
         questionAnswerRepository.save(questionAnswer)
         answerDetailsRepository.save(answerDetails)
 
-
         def questionDto = new QuestionDto(question)
         questionDto.setTitle(QUESTION_2_TITLE)
         questionDto.setContent(QUESTION_2_CONTENT)
