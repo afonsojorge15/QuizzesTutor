@@ -42,11 +42,6 @@ public class MultipleChoiceQuestion extends QuestionDetails {
 
         }
 
-        for (Option option: this.options) {
-            option.remove();
-        }
-        this.options.clear();
-
         int index = 0;
 
         for (OptionDto optionDto : options) {

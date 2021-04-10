@@ -439,6 +439,7 @@ class CreateQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getId() != null
         result.getQuestionDetails().getOptions().size() == 5
+        result.getQuestionDetails().getCorrectAnswers().size() == 2
         def resOption1 = result.getQuestionDetails().getOptions().get(0)
         resOption1.isCorrect()
         def resOption2 = result.getQuestionDetails().getOptions().get(1)
@@ -540,9 +541,6 @@ class CreateQuestionTest extends SpockTest {
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_CORRECT_OPTION_NEEDED
     }
-
-
-
 
     @Unroll
     def "fail to create any question for invalid/non-existent course (#nonExistentId)"(Integer nonExistentId) {
