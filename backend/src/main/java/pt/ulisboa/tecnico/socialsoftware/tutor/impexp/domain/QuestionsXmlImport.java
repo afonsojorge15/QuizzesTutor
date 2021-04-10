@@ -26,6 +26,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 public class QuestionsXmlImport {
     public static final String CONTENT = "content";
     public static final String SEQUENCE = "sequence";
+    public static final String RELEVANCE = "relevance";
     private QuestionService questionService;
     private CourseRepository courseRepository;
     private CourseExecution loadCourseExecution;
@@ -153,13 +154,16 @@ public class QuestionsXmlImport {
         List<OptionDto> optionDtos = new ArrayList<>();
         for (Element optionElement : questionElement.getChild("options").getChildren("option")) {
             Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue(SEQUENCE));
+            Integer optionRelevance = Integer.valueOf(optionElement.getAttributeValue(RELEVANCE));
             String optionContent = optionElement.getAttributeValue(CONTENT);
+
             boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
 
             OptionDto optionDto = new OptionDto();
             optionDto.setSequence(optionSequence);
             optionDto.setContent(optionContent);
             optionDto.setCorrect(correct);
+            optionDto.setRelevance(optionRelevance);
 
             optionDtos.add(optionDto);
         }

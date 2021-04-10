@@ -36,9 +36,10 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return options;
     }
 
-    public void setOptions(List<OptionDto> optionDtos) {
-        if (optionDtos.stream().filter(OptionDto::isCorrect).count() != 1) {
-            throw new TutorException(ONE_CORRECT_OPTION_NEEDED);
+    public void setOptions(List<OptionDto> options) {
+        if (options.stream().filter(OptionDto::isCorrect).count() < 1) {
+            throw new TutorException(AT_LEAST_ONE_CORRECT_OPTION_NEEDED);
+
         }
 
         for (Option option: this.options) {
@@ -47,9 +48,22 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         this.options.clear();
 
         int index = 0;
-        for (OptionDto optionDto : optionDtos) {
-            optionDto.setSequence(index++);
-            new Option(optionDto).setQuestionDetails(this);
+
+        for (OptionDto optionDto : options) {
+            if (optionDto.getId() == null) {
+                optionDto.setSequence(index++);
+                new Option(optionDto).setQuestionDetails(this);
+            } else {
+                Option option = getOptions()
+                        .stream()
+                        .filter(op -> op.getId().equals(optionDto.getId()))
+                        .findAny()
+                        .orElseThrow(() -> new TutorException(OPTION_NOT_FOUND, optionDto.getId()));
+
+                option.setContent(optionDto.getContent());
+                option.setCorrect(optionDto.isCorrect());
+                option.setRelevance(optionDto.getRelevance());
+            }
         }
     }
 
@@ -115,6 +129,16 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return new MultipleChoiceQuestionDto(this);
     }
 
+    public List<Option> getCorrectAnswers(){
+        List<Option> aux = new ArrayList<>();
+        for (Option option : options){
+            if (option.isCorrect()){
+                aux.add(option);
+            }
+        }
+        return aux;
+    }
+
     public Integer getCorrectAnswer() {
         return this.getOptions()
                 .stream()
@@ -153,3 +177,4 @@ public class MultipleChoiceQuestion extends QuestionDetails {
         return !result.isEmpty() ? result : "-";
     }
 }
+

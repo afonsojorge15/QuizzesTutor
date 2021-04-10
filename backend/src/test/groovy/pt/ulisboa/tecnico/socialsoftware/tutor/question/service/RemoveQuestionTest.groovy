@@ -143,6 +143,32 @@ class RemoveQuestionTest extends SpockTest {
         exception.getErrorMessage() == ErrorMessage.CANNOT_DELETE_SUBMITTED_QUESTION
     }
 
+    def "remove a question with two correct answers"() {
+        given: "a question with two correct answers"
+        optionKO.setCorrect(true)
+
+        when:
+        questionService.removeQuestion(question.getId())
+
+        then: "the question is removeQuestion"
+        questionRepository.count() == 0L
+        imageRepository.count() == 0L
+        optionRepository.count() == 0L
+    }
+
+    def "remove a question with relevance"() {
+        given: "a question with relevance"
+        optionOK.setRelevance(2)
+
+        when:
+        questionService.removeQuestion(question.getId())
+
+        then: "the question is removeQuestion"
+        questionRepository.count() == 0L
+        imageRepository.count() == 0L
+        optionRepository.count() == 0L
+    }
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
