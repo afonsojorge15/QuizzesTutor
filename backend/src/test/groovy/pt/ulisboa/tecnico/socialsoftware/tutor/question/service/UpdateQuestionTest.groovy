@@ -29,6 +29,8 @@ class UpdateQuestionTest extends SpockTest {
     def user
 
     def setup() {
+        createExternalCourseAndExecution()
+
         user = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         user.addCourse(externalCourseExecution)
         userRepository.save(user)
@@ -63,7 +65,7 @@ class UpdateQuestionTest extends SpockTest {
         optionRepository.save(optionOK)
 
         optionKO = new Option()
-        optionKO.setContent(OPTION_1_CONTENT)
+        optionKO.setContent(OPTION_2_CONTENT)
         optionKO.setCorrect(false)
         optionKO.setSequence(1)
         optionKO.setQuestionDetails(questionDetails)
@@ -93,8 +95,10 @@ class UpdateQuestionTest extends SpockTest {
         result.getQuestionDetails().getCorrectAnswers().size() == 2
         def resOptionOne = result.getQuestionDetails().getOptions().get(0)
         resOptionOne.getRelevance() == 3
+        resOptionOne.isCorrect()
         def resOptionTwo = result.getQuestionDetails().getOptions().get(1)
         resOptionTwo.getRelevance() == 5
+        resOptionTwo.isCorrect()
     }
 
     def "update a question and testing correct and relevance relation"() {
@@ -106,13 +110,14 @@ class UpdateQuestionTest extends SpockTest {
         and: '2 changed options'
         def options = new ArrayList<OptionDto>()
         def optionDto = new OptionDto(optionOK)
-        optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(false)
         options.add(optionDto)
         optionDto = new OptionDto(optionKO)
         optionDto.setCorrect(true)
         options.add(optionDto)
         questionDto.getQuestionDetailsDto().setOptions(options)
+        and: 'a count to load options to memory due to in memory database flaw'
+        optionRepository.count()
 
         when:
         questionService.updateQuestion(question.getId(), questionDto)
@@ -132,11 +137,11 @@ class UpdateQuestionTest extends SpockTest {
         and: 'an option is changed'
         result.getQuestionDetails().getOptions().size() == 2
         def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
-        resOptionOne.getContent() == OPTION_2_CONTENT
+        resOptionOne.getContent() == OPTION_1_CONTENT
         resOptionOne.getRelevance() == 0
         !resOptionOne.isCorrect()
         def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
-        resOptionTwo.getContent() == OPTION_1_CONTENT
+        resOptionTwo.getContent() == OPTION_2_CONTENT
         resOptionTwo.isCorrect()
         resOptionTwo.getRelevance() == 1
     }
@@ -165,7 +170,7 @@ class UpdateQuestionTest extends SpockTest {
         def options = new ArrayList<OptionDto>()
         options.add(optionDto)
         optionDto = new OptionDto(optionKO)
-        optionDto.setContent(OPTION_1_CONTENT)
+        optionDto.setContent(OPTION_2_CONTENT)
         optionDto.setCorrect(true)
         options.add(optionDto)
         questionDto.getQuestionDetailsDto().setOptions(options)
@@ -179,8 +184,10 @@ class UpdateQuestionTest extends SpockTest {
         result.getQuestionDetails().getCorrectAnswers().size() == 2
         def resOptionOne = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionOK.getId()}).findAny().orElse(null)
         resOptionOne.isCorrect()
+        resOptionOne.getRelevance() > 0
         def resOptionTwo = result.getQuestionDetails().getOptions().stream().filter({ option -> option.getId() == optionKO.getId()}).findAny().orElse(null)
         resOptionTwo.isCorrect()
+        resOptionTwo.getRelevance() > 0
     }
 
     def "update question with two options false"() {
@@ -241,7 +248,6 @@ class UpdateQuestionTest extends SpockTest {
         questionAnswer.setQuizAnswer(quizAnswer)
         questionAnswerRepository.save(questionAnswer)
         answerDetailsRepository.save(answerDetails)
-
 
         def questionDto = new QuestionDto(question)
         questionDto.setTitle(QUESTION_2_TITLE)

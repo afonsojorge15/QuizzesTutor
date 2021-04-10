@@ -12,6 +12,8 @@ class ImportExportCodeOrderQuestionsTest extends SpockTest {
     Integer questionId
 
     def setup() {
+        createExternalCourseAndExecution()
+
         def questionDto = new QuestionDto()
         questionDto.setKey(1)
         questionDto.setTitle(QUESTION_1_TITLE)
@@ -37,11 +39,16 @@ class ImportExportCodeOrderQuestionsTest extends SpockTest {
         CodeOrderSlotDto slotDto3 = new CodeOrderSlotDto()
         slotDto3.content = OPTION_1_CONTENT;
         slotDto3.order = 3;
+        
+        CodeOrderSlotDto slotDto4 = new CodeOrderSlotDto()
+        slotDto4.content = OPTION_1_CONTENT;
+        slotDto4.order = null;
 
         codeQuestionDto.getCodeOrderSlots().add(slotDto1)
         codeQuestionDto.getCodeOrderSlots().add(slotDto2)
         codeQuestionDto.getCodeOrderSlots().add(slotDto3)
-
+        codeQuestionDto.getCodeOrderSlots().add(slotDto4)
+        
         questionDto.setQuestionDetailsDto(codeQuestionDto)
 
         questionId = questionService.createQuestion(externalCourse.getId(), questionDto).getId()
@@ -69,7 +76,7 @@ class ImportExportCodeOrderQuestionsTest extends SpockTest {
         imageResult.getUrl() == IMAGE_1_URL
 
         def codeFillInDetailsDto = (CodeOrderQuestionDto) questionResult.getQuestionDetailsDto()
-        codeFillInDetailsDto.getCodeOrderSlots().size() == 3
+        codeFillInDetailsDto.getCodeOrderSlots().size() == 4
         codeFillInDetailsDto.getLanguage() == CODE_QUESTION_1_LANGUAGE
         def resOption = codeFillInDetailsDto.getCodeOrderSlots().get(0)
         resOption.getContent() == OPTION_1_CONTENT
