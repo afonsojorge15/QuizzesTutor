@@ -110,6 +110,9 @@ public class QuestionsXmlImport {
             case Question.QuestionTypes.CODE_ORDER_QUESTION:
                 questionDetailsDto = importCodeOrderQuestion(questionElement);
                 break;
+            case Question.QuestionTypes.OPEN_ANSWER_QUESTION:
+                questionDetailsDto = importOpenAnswerQuestion(questionElement);
+                break;
             default:
                 throw new TutorException(QUESTION_TYPE_NOT_IMPLEMENTED, type);
         }
@@ -181,6 +184,11 @@ public class QuestionsXmlImport {
             slots.add(slot);
         }
         questionDto.setCodeOrderSlots(slots);
+        return questionDto;
+    }
+    private QuestionDetailsDto importOpenAnswerQuestion(Element questionElement) {
+        OpenAnswerQuestionDto questionDto = new OpenAnswerQuestionDto();
+        questionDto.setAnswer(questionElement.getChildText("answer"));
         return questionDto;
     }
 
