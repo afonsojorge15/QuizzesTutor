@@ -10,6 +10,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Image
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.OpenAnswerQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.QuestionDetails
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Topic
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OpenAnswerQuestionDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.TopicDto
@@ -37,8 +38,8 @@ class RemoveOpenAnswerQuestionTest extends SpockTest {
         question.setStatus(Question.Status.AVAILABLE)
         question.setCourse(externalCourse)
         question.setImage(image)
-        def questionDetails = new OpenAnswerQuestionDto()
-        question.setQuestionDetails(questionDetails)
+        def questionDetails = new OpenAnswerQuestion()
+        question.setQuestionDetails(questionDetails as QuestionDetails)
         questionDetailsRepository.save(questionDetails)
         questionRepository.save(question)
 
@@ -56,6 +57,7 @@ class RemoveOpenAnswerQuestionTest extends SpockTest {
 
     def "remove an open answer question used in a quiz"() {
         given: "a question with answers"
+
         Quiz quiz = new Quiz()
         quiz.setKey(1)
         quiz.setTitle(QUIZ_TITLE)
