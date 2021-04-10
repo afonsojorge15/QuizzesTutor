@@ -7,6 +7,7 @@ import org.jdom2.filter.Filters;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPathExpression;
 import org.jdom2.xpath.XPathFactory;
+import pt.ulisboa.tecnico.socialsoftware.tutor.execution.domain.CourseExecution;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Course;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.repository.CourseRepository;
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException;
@@ -23,12 +24,19 @@ import java.util.List;
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 
 public class QuestionsXmlImport {
+    public static final String CONTENT = "content";
+    public static final String SEQUENCE = "sequence";
+    public static final String RELEVANCE = "relevance";
     private QuestionService questionService;
     private CourseRepository courseRepository;
+    private CourseExecution loadCourseExecution;
+    private List<QuestionDto> questions;
 
-    public void importQuestions(InputStream inputStream, QuestionService questionService, CourseRepository courseRepository) {
+    public List<QuestionDto> importQuestions(InputStream inputStream, QuestionService questionService, CourseRepository courseRepository, CourseExecution loadCourseExecution) {
         this.questionService = questionService;
         this.courseRepository = courseRepository;
+        this.loadCourseExecution = loadCourseExecution;
+        this.questions = new ArrayList<>();
 
         SAXBuilder builder = new SAXBuilder();
         builder.setIgnoringElementContentWhitespace(true);
@@ -50,6 +58,8 @@ public class QuestionsXmlImport {
         }
 
         importQuestions(doc);
+
+        return questions;
     }
 
     public void importQuestions(String questionsXml, QuestionService questionService, CourseRepository courseRepository) {
@@ -58,22 +68,43 @@ public class QuestionsXmlImport {
 
         InputStream stream = new ByteArrayInputStream(questionsXml.getBytes());
 
-        importQuestions(stream, questionService, courseRepository);
+        importQuestions(stream, questionService, courseRepository, null);
     }
 
     private void importQuestions(Document doc) {
         XPathFactory xpfac = XPathFactory.instance();
-        XPathExpression<Element> xp = xpfac.compile("//questions/question", Filters.element());
+        XPathExpression<Element> xp = xpfac.compile("//questions/course", Filters.element());
         for (Element element : xp.evaluate(doc)) {
-            importQuestion(element);
+            importCourseQuestions(element);
         }
     }
 
-    private void importQuestion(Element questionElement) {
-        String courseType = questionElement.getAttributeValue("courseType");
-        String courseName = questionElement.getAttributeValue("courseName");
-        Integer key = Integer.valueOf(questionElement.getAttributeValue("key"));
-        String content = questionElement.getAttributeValue("content");
+    private void importCourseQuestions(Element courseElement) {
+        String courseType = courseElement.getAttributeValue("courseType");
+        String courseName = courseElement.getAttributeValue("courseName");
+
+        Course course = courseRepository.findByNameType(courseName, courseType).orElseThrow(() -> new TutorException(COURSE_NOT_FOUND, courseName));
+        if (loadCourseExecution != null && course != loadCourseExecution.getCourse()) {
+            throw new TutorException(INVALID_COURSE, courseName + " " + courseType);
+        }
+
+        for (Element element : courseElement.getChildren()) {
+            importQuestion(element, course);
+        }
+    }
+
+    private void importQuestion(Element questionElement, Course course) {
+        Integer key = null;
+        if (loadCourseExecution == null) {
+            key = Integer.valueOf(questionElement.getAttributeValue("key"));
+            try {
+                questionService.findQuestionByKey(key);
+                throw new TutorException(QUESTION_KEY_ALREADY_EXISTS, key);
+            } catch (TutorException tutorException) {
+                // OK it does not exist
+            }
+        }
+        String content = questionElement.getAttributeValue(CONTENT);
         String title = questionElement.getAttributeValue("title");
         String status = questionElement.getAttributeValue("status");
         String creationDate = questionElement.getAttributeValue("creationDate");
@@ -116,16 +147,16 @@ public class QuestionsXmlImport {
 
         questionDto.setQuestionDetailsDto(questionDetailsDto);
 
-        Course course = courseRepository.findByNameType(courseName, courseType).orElseThrow(() -> new TutorException(COURSE_NOT_FOUND, courseName));
-        questionService.createQuestion(course.getId(), questionDto);
+        questions.add(questionService.createQuestion(course.getId(), questionDto));
     }
 
     private QuestionDetailsDto importMultipleChoiceQuestion(Element questionElement) {
         List<OptionDto> optionDtos = new ArrayList<>();
         for (Element optionElement : questionElement.getChild("options").getChildren("option")) {
-            Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
-            Integer optionRelevance = Integer.valueOf(optionElement.getAttributeValue("relevance"));
-            String optionContent = optionElement.getAttributeValue("content");
+            Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue(SEQUENCE));
+            Integer optionRelevance = Integer.valueOf(optionElement.getAttributeValue(RELEVANCE));
+            String optionContent = optionElement.getAttributeValue(CONTENT);
+
             boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
 
             OptionDto optionDto = new OptionDto();
@@ -148,11 +179,11 @@ public class QuestionsXmlImport {
         var spots = new ArrayList<CodeFillInSpotDto>();
         for (Element spotElement : questionElement.getChild("fillInSpots").getChildren("fillInSpot")) {
             var spot = new CodeFillInSpotDto();
-            spot.setSequence(Integer.valueOf(spotElement.getAttributeValue("sequence")));
+            spot.setSequence(Integer.valueOf(spotElement.getAttributeValue(SEQUENCE)));
             var options = new ArrayList<OptionDto>();
             for (Element optionElement : spotElement.getChildren("fillInOption")) {
-                Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue("sequence"));
-                String optionContent = optionElement.getAttributeValue("content");
+                Integer optionSequence = Integer.valueOf(optionElement.getAttributeValue(SEQUENCE));
+                String optionContent = optionElement.getAttributeValue(CONTENT);
                 boolean correct = Boolean.parseBoolean(optionElement.getAttributeValue("correct"));
 
                 OptionDto optionDto = new OptionDto();
@@ -176,8 +207,10 @@ public class QuestionsXmlImport {
         var slots = new ArrayList<CodeOrderSlotDto>();
         for (Element slotElement : questionElement.getChild("orderSlots").getChildren("slot")) {
             var slot = new CodeOrderSlotDto();
-            slot.setOrder(Integer.valueOf(slotElement.getAttributeValue("order")));
-            slot.setSequence(Integer.valueOf(slotElement.getAttributeValue("sequence")));
+
+            Integer order = slotElement.getAttributeValue("order").equals("null") ? null : Integer.valueOf(slotElement.getAttributeValue("order"));
+            slot.setOrder(order);
+            slot.setSequence(Integer.valueOf(slotElement.getAttributeValue(SEQUENCE)));
             slot.setContent(slotElement.getValue());
 
             slots.add(slot);
