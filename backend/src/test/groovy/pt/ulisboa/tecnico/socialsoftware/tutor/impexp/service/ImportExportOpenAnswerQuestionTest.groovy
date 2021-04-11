@@ -18,6 +18,7 @@ class ImportExportOpenAnswerQuestionTest extends SpockTest {
     def teacher
 
     def setup() {
+        createExternalCourseAndExecution()
         def questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_1_TITLE)
         questionDto.setContent(QUESTION_1_CONTENT)

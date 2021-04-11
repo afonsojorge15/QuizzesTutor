@@ -17,7 +17,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 
 @DataJpaTest
 class CreateOpenAnswerQuestion extends SpockTest {
-
+    def setup() {
+        createExternalCourseAndExecution()
+    }
 
     def "create a open answer question with image and an invalid answer"() {
         given: "a questionDto"
@@ -58,7 +60,7 @@ class CreateOpenAnswerQuestion extends SpockTest {
         image.setWidth(20)
         questionDto.setImage(image)
         and: 'an answer'
-        def  answer = new String(ANSWER_STRING_CONTENT)
+        def  answer = new String(ANSWER_1_CONTENT)
         questionDto.getQuestionDetailsDto().setAnswer(answer)
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
@@ -95,7 +97,7 @@ class CreateOpenAnswerQuestion extends SpockTest {
         questionDto.setStatus(Question.Status.AVAILABLE.name())
         questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
         and: 'an answer'
-        def  answer = new String(ANSWER_STRING_CONTENT)
+        def  answer = new String(ANSWER_1_CONTENT)
         questionDto.getQuestionDetailsDto().setAnswer(answer)
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)

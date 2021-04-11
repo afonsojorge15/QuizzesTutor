@@ -35,6 +35,7 @@ class ImportExportItemCombinationQuestionTest extends SpockTest {
     def link
 
     def setup() {
+        createExternalCourseAndExecution()
 
         def questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_2_TITLE)

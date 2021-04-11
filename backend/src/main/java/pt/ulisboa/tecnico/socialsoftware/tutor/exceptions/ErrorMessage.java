@@ -28,6 +28,8 @@ public enum ErrorMessage {
     INVALID_TYPE_FOR_AUTH_USER("Invalid type for auth user"),
     INVALID_AUTH_USERNAME("Username: %s, belongs to a different authentication method"),
     INVALID_ANSWER("Answer cant be empty"),
+    AT_LEAST_ONE_CORRECT_OPTION_NEEDED("at least one correct option"),
+
 
     ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
