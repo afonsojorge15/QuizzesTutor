@@ -17,6 +17,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 
 @DataJpaTest
 class CreateItemCombinationQuestionTest extends SpockTest {
+    def setup() {
+        createExternalCourseAndExecution()
+    }
+
     def "create an item combo question with two items connected to each other"() {
         given: "a questionDto"
         def questionDto = new QuestionDto()
@@ -39,19 +43,29 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         linkDto.setLink(itemDto1, itemDto2)
         def links = new ArrayList<LinkDto>()
         links.add(linkDto)
-        questionDto.getQuestionDetailsDto().setItemsL(items)
-        questionDto.getQuestionDetailsDto().setItemsR(items)
-        questionDto.getQuestionDetailsDto().setLinks(links)
+        questionDto.getQuestionDetailsDto().setItemsLeft(items)
+        questionDto.getQuestionDetailsDto().setItemsRight(items)
+        questionDto.getQuestionDetailsDto().setLinkS(links)
 
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
         then: "the link exists between both items"
+        questionRepository.count() == 1L
         def result = questionRepository.findAll().get(0)
-        result.getItemsL().size() == 1
-        result.getItemsR().size() == 1
-        result.getLinks().size() == 1
-        result.getLinks() == links
+        result.getId() != null
+        result.getKey() == 1
+        result.getStatus() == Question.Status.AVAILABLE
+        result.getTitle() == QUESTION_1_TITLE
+        result.getContent() == QUESTION_1_CONTENT
+        result.getImage() == null
+        result.getQuestionDetails().getOptions().size() == 1
+        result.getCourse().getName() == COURSE_1_NAME
+        externalCourse.getQuestions().contains(result)
+        result.getQuestionDetails().getItemsL().size() == 1
+        result.getQuestionDetails().getItemsR().size() == 1
+        result.getQuestionDetails().getLinks().size() == 1
+        result.getQuestionDetails().getLinks().get(0) == links
     }
 
     def "create an item combo question with two items not connected to each other"() {
@@ -73,18 +87,18 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         items.add(itemDto1)
         items.add(itemDto2)
         def links = new ArrayList<LinkDto>()
-        questionDto.getQuestionDetailsDto().setItemsL(items)
-        questionDto.getQuestionDetailsDto().setItemsR(items)
-        questionDto.getQuestionDetailsDto().setLinks(links)
+        questionDto.getQuestionDetailsDto().setItemsLeft(items)
+        questionDto.getQuestionDetailsDto().setItemsRight(items)
+        questionDto.getQuestionDetailsDto().setLinkS(links)
 
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
         then: "the link does not exist"
         def result = questionRepository.findAll().get(0)
-        result.getLinks().size() == 0
-        result.getItemsL().size() == 1
-        result.getItemsR().size() == 1
+        result.getQuestionDetails().getItemsL().size() == 1
+        result.getQuestionDetails().getItemsR().size() == 1
+        result.getQuestionDetails().getLinks().size() == 0
     }
 
     def "create an item combo question with three and one item connecting to other 2 items"() {
@@ -116,19 +130,19 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         def links = new ArrayList<LinkDto>()
         links.add(linkDto)
         links.add(linkDto2)
-        questionDto.getQuestionDetailsDto().setItemsL(items)
-        questionDto.getQuestionDetailsDto().setItemsR(items)
-        questionDto.getQuestionDetailsDto().setLinks(links)
+        questionDto.getQuestionDetailsDto().setItemsLeft(items)
+        questionDto.getQuestionDetailsDto().setItemsRight(items)
+        questionDto.getQuestionDetailsDto().setLinkS(links)
 
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)
 
         then: "both links exist"
         def result = questionRepository.findAll().get(0)
-        result.getItemsL().size() == 1
-        result.getItemsR().size() == 2
-        result.getLinks().size() == 2
-        result.getLinks() == links
+        result.getQuestionDetails().getItemsL().size() == 1
+        result.getQuestionDetails().getItemsR().size() == 2
+        result.getQuestionDetails().getLinks().size() == 2
+        result.getQuestionDetails().getLinks().get(0) == links
     }
 
     def "create an item combo question with two items connected to each other but from the same group"() {
@@ -150,9 +164,9 @@ class CreateItemCombinationQuestionTest extends SpockTest {
         items.add(itemDto1)
         items.add(itemDto2)
         def links = new ArrayList<LinkDto>()
-        questionDto.getQuestionDetailsDto().setItemsL(items)
-        questionDto.getQuestionDetailsDto().setItemsR(items)
-        questionDto.getQuestionDetailsDto().setLinks(links)
+        questionDto.getQuestionDetailsDto().setItemsLeft(items)
+        questionDto.getQuestionDetailsDto().setItemsRight(items)
+        questionDto.getQuestionDetailsDto().setLinkS(links)
 
         when:
         questionService.createQuestion(externalCourse.getId(), questionDto)

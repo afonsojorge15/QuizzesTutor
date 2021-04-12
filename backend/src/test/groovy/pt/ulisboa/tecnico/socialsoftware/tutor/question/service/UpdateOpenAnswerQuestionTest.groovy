@@ -30,6 +30,7 @@ class UpdateOpenAnswerQuestionTest extends SpockTest {
     def answer
 
     def setup() {
+        createExternalCourseAndExecution()
         user = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         user.addCourse(externalCourseExecution)
         userRepository.save(user)
@@ -49,60 +50,29 @@ class UpdateOpenAnswerQuestionTest extends SpockTest {
         question.setStatus(Question.Status.AVAILABLE)
         question.setImage(image)
         def questionDetails = new OpenAnswerQuestion()
+        questionDetails.setAnswer(ANSWER_1_CONTENT)
         question.setQuestionDetails(questionDetails)
         questionDetailsRepository.save(questionDetails)
         questionRepository.save(question)
 
-        and: 'an answer'
-        answer = new Answer()
-        answer.setContent(ANSWER_1_CONTENT)
-        answer.setQuestionDetails(questionDetails)
+
 
 
     }
 
-    def "update a question"() {
-        given: "a changed question"
-        def questionDto = new QuestionDto(question)
-        questionDto.setTitle(QUESTION_2_TITLE)
-        questionDto.setContent(QUESTION_2_CONTENT)
-        questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
-
-        when:
-        questionService.updateQuestion(question.getId(), questionDto)
-
-        then: "the question is changed"
-        questionRepository.count() == 1L
-        def result = questionRepository.findAll().get(0)
-        result.getId() == question.getId()
-        result.getTitle() == QUESTION_2_TITLE
-        result.getContent() == QUESTION_2_CONTENT
-        and: 'are not changed'
-        result.getStatus() == Question.Status.AVAILABLE
-        result.getNumberOfAnswers() == 1
-        result.getNumberOfCorrect() == 1
-        result.getDifficulty() == 50
-        result.getImage() != null
-
-    }
 
     def "Change the answer"() {
         given: 'a question'
         def questionDto = new QuestionDto(question)
-        questionDto.setTitle(QUESTION_2_TITLE)
-        questionDto.setContent(QUESTION_2_CONTENT)
         questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
-        and: '1 changed answer'
-        def answerDto = new AnswerDto(answer)
-        answerDto.setContent(ANSWER_2_CONTENT)
-        questionDto.getQuestionDetailsDto()
+        questionDto.getQuestionDetailsDto().setAnswer("something")
 
         when:
         questionService.updateQuestion(question.getId(), questionDto)
 
         then: "the question an exception is thrown"
         def result = questionRepository.findAll().get(0)
-        result.getQuestionDetails().getAnswer().getContent() == ANSWER_2_CONTENT
+        result.getQuestionDetails().getAnswer() == "something"
     }
 
     @TestConfiguration

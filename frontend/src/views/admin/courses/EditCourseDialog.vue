@@ -8,9 +8,7 @@
   >
     <v-card>
       <v-card-title>
-        <span class="headline">
-          New Course
-        </span>
+        <span class="headline"> New Course </span>
       </v-card-title>
 
       <v-card-text class="text-left" v-if="editCourse">
@@ -46,7 +44,7 @@
           data-cy="cancelButton"
           >Cancel</v-btn
         >
-        <v-btn color="green darken-1" @click="saveCourse" data-cy="saveButton"
+        <v-btn color="green darken-1" @click="saveCourse()" data-cy="saveButton"
           >Save</v-btn
         >
       </v-card-actions>
@@ -69,6 +67,7 @@ export default class EditCourseDialog extends Vue {
 
   created() {
     this.editCourse = new Course(this.course);
+
     this.isCreateCourse = !!this.editCourse.name;
   }
 

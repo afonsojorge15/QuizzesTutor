@@ -20,7 +20,7 @@ public class Link implements DomainEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_details_id")
     private ItemCombinationQuestion questionDetails;
 
@@ -71,7 +71,7 @@ public class Link implements DomainEntity {
 
     @Override
     public String toString() {
-        return "Option{" +
+        return "Link{" +
                 "id=" + id +
                 ", link=" + items +
                 '}';

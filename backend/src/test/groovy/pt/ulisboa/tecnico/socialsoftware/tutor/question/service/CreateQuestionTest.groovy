@@ -15,6 +15,9 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage
 
 @DataJpaTest
 class CreateQuestionTest extends SpockTest {
+    def setup() {
+        createExternalCourseAndExecution()
+    }
 
     def "create a multiple choice question with no image and one option"() {
         given: "a questionDto"
@@ -436,6 +439,7 @@ class CreateQuestionTest extends SpockTest {
         def result = questionRepository.findAll().get(0)
         result.getId() != null
         result.getQuestionDetails().getOptions().size() == 5
+        result.getQuestionDetails().getCorrectAnswers().size() == 2
         def resOption1 = result.getQuestionDetails().getOptions().get(0)
         resOption1.isCorrect()
         def resOption2 = result.getQuestionDetails().getOptions().get(1)
@@ -537,97 +541,6 @@ class CreateQuestionTest extends SpockTest {
         def exception = thrown(TutorException)
         exception.getErrorMessage() == ErrorMessage.AT_LEAST_ONE_CORRECT_OPTION_NEEDED
     }
-  def "create a open answer question with no image "() {
-        given: "a questionDto"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
-        and: 'an answer'
-        def  answer = new String(ANSWER_STRING_CONTENT)
-        questionDto.getQuestionDetailsDto().setAnwer(answer)
-        when:
-        questionService.createQuestion(externalCourse.getId(), questionDto)
-
-        then: "the correct question is inside the repository"
-        questionRepository.count() == 1L
-
-    }
-
-    def "create a open answer question with no image and an invalid answer"() {
-        given: "a questionDto"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
-        and: 'an answer'
-        def  answer = ""
-        questionDto.getQuestionDetailsDto().setAnwer(answer)
-        when:
-        questionService.createQuestion(externalCourse.getId(), questionDto)
-
-        then: "exception is thrown"
-        def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.INVALID_ANSWER
-
-    }
-
-    def "create a open answer question with image "() {
-        given: "a questionDto"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
-        and: 'an image'
-        def image = new ImageDto()
-        image.setUrl(IMAGE_1_URL)
-        image.setWidth(20)
-        questionDto.setImage(image)
-        and: 'an answer'
-        def  answer = new String(ANSWER_STRING_CONTENT)
-        questionDto.getQuestionDetailsDto().setAnwer(answer)
-        when:
-        questionService.createQuestion(externalCourse.getId(), questionDto)
-
-        then: "the correct question is inside the repository"
-        questionRepository.count() == 1L
-
-    }
-
-    def "create a open answer question with image and an invalid answer"() {
-        given: "a questionDto"
-        def questionDto = new QuestionDto()
-        questionDto.setKey(1)
-        questionDto.setTitle(QUESTION_1_TITLE)
-        questionDto.setContent(QUESTION_1_CONTENT)
-        questionDto.setStatus(Question.Status.AVAILABLE.name())
-        questionDto.setQuestionDetailsDto(new OpenAnswerQuestionDto())
-        and: 'an image'
-        def image = new ImageDto()
-        image.setUrl(IMAGE_1_URL)
-        image.setWidth(20)
-        questionDto.setImage(image)
-        and: 'an answer'
-        def  answer = ""
-        questionDto.getQuestionDetailsDto().setAnwer(answer)
-        when:
-        questionService.createQuestion(externalCourse.getId(), questionDto)
-
-        then: "exception is thrown"
-        def exception = thrown(TutorException)
-        exception.getErrorMessage() == ErrorMessage.INVALID_ANSWER
-
-
-    }
-
-
-
 
     @Unroll
     def "fail to create any question for invalid/non-existent course (#nonExistentId)"(Integer nonExistentId) {

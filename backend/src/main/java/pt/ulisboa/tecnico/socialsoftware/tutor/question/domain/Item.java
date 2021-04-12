@@ -21,16 +21,16 @@ public class Item implements DomainEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false)
+    @Column
     private Integer sequence;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Embedded
+    @Column
     private Boolean group;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_details_id")
     private ItemCombinationQuestion questionDetails;
 
@@ -72,8 +72,6 @@ public class Item implements DomainEntity {
     }
 
     public void setContent(String content) {
-        /*if (content == null || content.isBlank())
-            throw new TutorException(INVALID_CONTENT_FOR_OPTION);*/
 
         this.content = content;
     }

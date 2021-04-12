@@ -32,9 +32,10 @@ class ImportExportItemCombinationQuestionTest extends SpockTest {
     def item2
     def item3
     def user
-
+    def link
 
     def setup() {
+        createExternalCourseAndExecution()
 
         def questionDto = new QuestionDto()
         questionDto.setTitle(QUESTION_2_TITLE)
@@ -60,9 +61,9 @@ class ImportExportItemCombinationQuestionTest extends SpockTest {
 
         links.add(linkDto)
 
-        questionDto.getQuestionDetailsDto().setItemsL(items)
-        questionDto.getQuestionDetailsDto().setItemsR(items)
-        questionDto.getQuestionDetailsDto().setLinks(links)
+        questionDto.getQuestionDetailsDto().setItemsLeft(items)
+        questionDto.getQuestionDetailsDto().setItemsRight(items)
+        questionDto.getQuestionDetailsDto().setLinkS(links)
     }
 
     def 'export and import questions to xml'() {

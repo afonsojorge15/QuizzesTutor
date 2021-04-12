@@ -34,6 +34,7 @@ class UpdateItemCombinationQuestion extends SpockTest {
     def link
 
     def setup() {
+        createExternalCourseAndExecution()
         user = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL, User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         user.addCourse(externalCourseExecution)
         userRepository.save(user)
@@ -63,24 +64,28 @@ class UpdateItemCombinationQuestion extends SpockTest {
         item1 = new Item()
         item1.setContent(ITEM_1_CONTENT)
         item1.setSequence(0)
+        item1.setGroup(true)
         item1.setQuestionDetails(questionDetails)
         itemRepository.save(item1)
 
         item2 = new Item()
         item2.setContent(ITEM_2_CONTENT)
         item2.setSequence(1)
+        item2..setGroup(false)
         item2.setQuestionDetails(questionDetails)
         itemRepository.save(item2)
 
         item3 = new Item()
         item3.setContent(ITEM_2_CONTENT)
+        item3.setGroup(false)
         item3.setSequence(2)
         item3.setQuestionDetails(questionDetails)
         itemRepository.save(item3)
 
 
         def link = new Link()
-        link.setLink(item1, item2)
+
+        link.setLink(item1 as ItemDto, item2 as ItemDto)
         linkRepository.save(link)
 
     }
@@ -95,11 +100,11 @@ class UpdateItemCombinationQuestion extends SpockTest {
 
         def items = new ArrayList<ItemDto>()
         def itemDto1 = new ItemDto(item1)
-        itemDto1.setContent(ITEM_2_CONTENT)
+
         def itemDto2 = new ItemDto(item2)
-        itemDto2.setContent(ITEM_1_CONTENT)
+
         def itemDto3 = new ItemDto(item3)
-        itemDto3.setContent(ITEM_1_CONTENT)
+
 
         items.add(itemDto1)
         items.add(itemDto2)
@@ -112,9 +117,9 @@ class UpdateItemCombinationQuestion extends SpockTest {
 
         links.add(linkDto)
 
-        questionDto.getQuestionDetailsDto().setItemsL(items)
-        questionDto.getQuestionDetailsDto().setItemsR(items)
-        questionDto.getQuestionDetailsDto().setLinks(links)
+        questionDto.getQuestionDetailsDto().setItemsLeft(items)
+        questionDto.getQuestionDetailsDto().setItemsRight(items)
+        questionDto.getQuestionDetailsDto().setLinkS(links)
 
         when:
         questionService.updateQuestion(question.getId(), questionDto)
@@ -132,7 +137,6 @@ class UpdateItemCombinationQuestion extends SpockTest {
         result.getDifficulty() == 50
         result.getImage() != null
         and: 'new link is made'
-
 
 
         result.getQuestionDetails().getLinks().size() == 1

@@ -27,6 +27,9 @@ public enum ErrorMessage {
     INVALID_QUESTION_SEQUENCE_FOR_QUIZ("Invalid question sequence for quiz"),
     INVALID_TYPE_FOR_AUTH_USER("Invalid type for auth user"),
     INVALID_AUTH_USERNAME("Username: %s, belongs to a different authentication method"),
+    INVALID_ANSWER("Answer cant be empty"),
+    AT_LEAST_ONE_CORRECT_OPTION_NEEDED("at least one correct option"),
+
 
     ASSESSMENT_NOT_FOUND("Assessment not found with id %d"),
     COURSE_EXECUTION_NOT_FOUND("Course execution not found with id %d"),
@@ -50,6 +53,7 @@ public enum ErrorMessage {
     USER_NOT_FOUND("User not found with id %d"),
     EXTERNAL_USER_NOT_FOUND("User not found with username %s"),
     COURSE_NOT_FOUND("Course not found with name %s"),
+    INVALID_COURSE("This is not an execution of course %s"),
     USER_ALREADY_ACTIVE("User is already active with username %s"),
     USER_IS_ACTIVE("User state is active: username %s"),
     INVALID_CONFIRMATION_TOKEN("Invalid confirmation token"),
@@ -58,6 +62,7 @@ public enum ErrorMessage {
 
     CANNOT_DELETE_COURSE_EXECUTION("The course execution cannot be deleted %s"),
 
+    QUESTION_KEY_ALREADY_EXISTS("Questions already exists with key %d"),
     QUESTION_OPTION_MISMATCH("Question %d does not have option %d"),
     QUESTION_ORDER_SLOT_MISMATCH("Question %d does not have slot %d"),
 
@@ -97,13 +102,13 @@ public enum ErrorMessage {
     USER_ALREDAY_ANSWERED_TOURNAMENT_QUIZ("User has already answered quiz of tournament: %s"),
     WRONG_TOURNAMENT_PASSWORD("Wrong tournament password for private tournament %d"),
 
+    LINK_BETWEEN_SAME_GROUP_ITEMS("Cant link 2 elements of the same group"),
     NO_CORRECT_OPTION("Question does not have a correct option"),
     NOT_ENOUGH_QUESTIONS("Not enough questions to create a quiz"),
     NOT_ENOUGH_QUESTIONS_TOURNAMENT("Not enough questions to create a quiz. One of the selected topics might not be available now. Please go check it"),
     AT_LEAST_ONE_OPTION_NEEDED("Questions need to have at least one option."),
     AT_LEAST_THREE_SLOTS_NEEDED("Order questions need to have at least 3 used slots."),
     ONE_CORRECT_OPTION_NEEDED("Questions need to have 1 and only 1 correct option"),
-    AT_LEAST_ONE_CORRECT_OPTION_NEEDED("Questions need to have at least one correct option"),
     CANNOT_CHANGE_ANSWERED_QUESTION("Can not change answered question"),
     QUIZ_HAS_ANSWERS("Quiz already has answers"),
     QUIZ_ALREADY_COMPLETED("Quiz already completed"),

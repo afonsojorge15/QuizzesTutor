@@ -38,7 +38,7 @@ public class LinkDto implements Serializable {
 
     @Override
     public String toString() {
-        return "OptionDto{" +
+        return "LinkDto{" +
                 "id=" + this.id +
                 ", link='" + this.items + '\'' +
                 '}';

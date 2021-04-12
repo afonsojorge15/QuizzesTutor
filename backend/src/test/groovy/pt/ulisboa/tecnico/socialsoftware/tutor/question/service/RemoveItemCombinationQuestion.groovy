@@ -26,6 +26,7 @@ class RemoveItemCombinationQuestion extends SpockTest {
     def teacher
 
     def setup() {
+        createExternalCourseAndExecution()
         def image = new Image()
         image.setUrl(IMAGE_1_URL)
         image.setWidth(20)
@@ -49,12 +50,14 @@ class RemoveItemCombinationQuestion extends SpockTest {
         itemOK = new Item()
         itemOK.setContent(ITEM_1_CONTENT)
         itemOK.setGroup(true)
+        itemOK.setSequence(0)
         itemOK.setQuestionDetails(questionDetails)
         itemRepository.save(itemOK)
 
         itemKO = new Item()
         itemKO.setContent(ITEM_2_CONTENT)
         itemKO.setGroup(false)
+        itemOK.setSequence(1)
         itemKO.setQuestionDetails(questionDetails)
         itemRepository.save(itemKO)
     }
@@ -66,7 +69,7 @@ class RemoveItemCombinationQuestion extends SpockTest {
         then: "the question is removeQuestion"
         questionRepository.count() == 0L
         imageRepository.count() == 0L
-        optionRepository.count() == 0L
+        itemRepository.count() == 0L
     }
 
     @TestConfiguration

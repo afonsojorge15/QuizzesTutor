@@ -18,7 +18,7 @@ import spock.lang.Unroll
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*
 
 @DataJpaTest
-class UpdateQuestionSubmissionTest extends SpockTest{
+class UpdateQuestionSubmissionTest extends SpockTest {
     def student
     def teacher
     def question
@@ -26,6 +26,8 @@ class UpdateQuestionSubmissionTest extends SpockTest{
     def questionSubmission
 
     def setup() {
+        createExternalCourseAndExecution()
+
         student = new User(USER_1_NAME, USER_1_USERNAME, USER_1_EMAIL,
                 User.Role.STUDENT, false, AuthUser.Type.TECNICO)
         userRepository.save(student)
@@ -66,7 +68,9 @@ class UpdateQuestionSubmissionTest extends SpockTest{
         and: "a questionSubmissionDto"
         def questionSubmissionDto = new QuestionSubmissionDto(questionSubmission)
         questionSubmissionDto.setQuestion(questionDto)
-
+        and: 'a count to load options to memory due to in memory database flaw'
+        optionRepository.count();
+        
         when:
         questionSubmissionService.updateQuestionSubmission(questionSubmission.getId(), questionSubmissionDto)
 

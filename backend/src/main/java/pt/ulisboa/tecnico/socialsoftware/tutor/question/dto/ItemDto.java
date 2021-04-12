@@ -55,7 +55,7 @@ public class ItemDto implements Serializable {
 
     @Override
     public String toString() {
-        return "OptionDto{" +
+        return "ItemDto{" +
                 "id=" + id +
                 ", group=" + group +
                 ", content='" + content + '\'' +
