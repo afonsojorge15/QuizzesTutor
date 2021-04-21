@@ -1,7 +1,8 @@
 <template>
   <div class="multiple-choice-options">
     <v-row>
-      <v-col cols="1" offset="10"> Correct </v-col>
+      <v-col cols="1" offset="9"> Correct </v-col>
+      <v-col cols="1"> Relevance </v-col>
     </v-row>
 
     <v-row
@@ -9,7 +10,7 @@
       :key="index"
       data-cy="questionOptionsInput"
     >
-      <v-col cols="10">
+      <v-col cols="9">
         <v-textarea
           v-model="option.content"
           :label="`Option ${index + 1}`"
@@ -24,6 +25,13 @@
           inset
           :data-cy="`Switch${index + 1}`"
         />
+      </v-col>
+      <v-col>
+            <v-select
+              v-model="option.relevance"
+              :items="getList"
+              solo
+            ></v-select>
       </v-col>
       <v-col v-if="sQuestionDetails.options.length > 2">
         <v-tooltip bottom>
@@ -64,6 +72,14 @@ import Option from '@/models/management/Option';
 export default class MultipleChoiceCreate extends Vue {
   @PropSync('questionDetails', { type: MultipleChoiceQuestionDetails })
   sQuestionDetails!: MultipleChoiceQuestionDetails;
+
+  get getList() {
+      var aux:number[] = new Array();
+      for(var i = 0; i < this.sQuestionDetails.options.length + 1; i++){
+          aux.push(i);
+      }
+      return aux;
+  }
 
   addOption() {
     this.sQuestionDetails.options.push(new Option());
