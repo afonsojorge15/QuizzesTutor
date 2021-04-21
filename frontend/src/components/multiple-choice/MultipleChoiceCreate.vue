@@ -63,6 +63,7 @@
   </div>
 </template>
 
+
 <script lang="ts">
 import { Component, Model, PropSync, Vue, Watch } from 'vue-property-decorator';
 import MultipleChoiceQuestionDetails from '@/models/management/questions/MultipleChoiceQuestionDetails';
