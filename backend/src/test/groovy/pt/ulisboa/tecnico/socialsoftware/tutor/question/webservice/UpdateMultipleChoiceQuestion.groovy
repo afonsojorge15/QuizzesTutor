@@ -108,14 +108,14 @@ class UpdateMultipleChoiceQuestion extends SpockTest {
         def result = response.data
         result.title == QUESTION_2_TITLE
         result.content == QUESTION_2_CONTENT
-        result.questionDetailsDto.options.size() == 6
-        def result1 = result.questionDetailsDto.options.get(3)
+        result.questionDetailsDto.options.size() == 3
+        def result1 = result.questionDetailsDto.options.get(0)
         result1.correct == false
         result1.relevance == 0
-        def result2 = result.questionDetailsDto.options.get(4)
+        def result2 = result.questionDetailsDto.options.get(1)
         result2.correct == true
         result2.relevance == 4
-        def result3 = result.questionDetailsDto.options.get(5)
+        def result3 = result.questionDetailsDto.options.get(2)
         result3.correct == true
         result3.relevance == 3
         result1.content == OPTION_2_CONTENT
