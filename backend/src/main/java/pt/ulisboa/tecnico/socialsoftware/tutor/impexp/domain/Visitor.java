@@ -25,10 +25,6 @@ public interface Visitor {
 
     default void visitQuiz(Quiz quiz) {}
 
-    default void visitItem(Item item) {}
-
-    default void visitLink(Link link) {}
-
     default void visitQuizQuestion(QuizQuestion quizQuestion) {}
 
     default void visitUser(User user) {}
@@ -50,8 +46,6 @@ public interface Visitor {
     default void visitAnswerDetails(MultipleChoiceAnswer answer){}
 
     default void visitQuestionDetails(MultipleChoiceQuestion question) {}
-
-    default void visitQuestionDetails(ItemCombinationQuestion question) {}
 
     default void visitAnswerDetails(CodeFillInAnswer answer){}
 
