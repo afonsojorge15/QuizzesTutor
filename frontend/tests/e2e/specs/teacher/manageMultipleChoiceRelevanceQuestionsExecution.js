@@ -129,19 +129,34 @@ describe('Manage Multiple Choice Relevance Questions Walk-through', () => {
       cy.get('button').contains('close').click();
   });
 
-  it('Can view question (with button)', function () {
-      cy.get('tbody tr')
-        .first()
+  it('Can update title (with right-click)', function () {
+      cy.route('PUT', '/questions/*').as('updateQuestion');
+
+      cy.get('[data-cy="questionTitleGrid"]').first().rightclick();
+
+      cy.get('[data-cy="createOrEditQuestionDialog"]')
+        .parent()
+        .should('be.visible')
         .within(($list) => {
-          cy.get('button').contains('visibility').click();
+          cy.get('span.headline').should('contain', 'Edit Question');
+
+          cy.get('[data-cy="questionTitleTextArea"]')
+            .clear({ force: true })
+            .type('Cypress Question Example - 01 - Edited', { force: true });
+
+          cy.get('button').contains('Save').click();
         });
 
-      validateQuestion(
-        'Cypress Question Example - 01',
-        'Cypress Question Example - Content - 01',
+      cy.wait('@updateQuestion').its('status').should('eq', 200);
+
+      cy.get('[data-cy="questionTitleGrid"]')
+        .first()
+        .should('contain', 'Cypress Question Example - 01 - Edited');
+
+      validateQuestionFull(
+        (title = 'Cypress Question Example - 01 - Edited'),
+        (content = 'Cypress Question Example - Content - 01'),
         [1,2,3,4]
       );
-
-      cy.get('button').contains('close').click();
-  });
+   });
 });
