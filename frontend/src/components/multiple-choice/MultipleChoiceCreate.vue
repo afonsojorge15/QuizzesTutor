@@ -30,6 +30,7 @@
             <v-select
               v-model="option.relevance"
               :items="getList"
+              :data-cy="`Relevance${index + 1}`"
               solo
             ></v-select>
       </v-col>
