@@ -1,4 +1,4 @@
-describe('Manage Multiple Choice Questions Walk-through', () => {
+describe('Manage Multiple Choice Relevance Questions Walk-through', () => {
   function validateQuestion(
     title,
     content,
@@ -99,6 +99,34 @@ describe('Manage Multiple Choice Questions Walk-through', () => {
       'Cypress Question Example - Content - 01',
       [1,2,3,4]
     );
+  });
+
+  it('Can view question (with button)', function () {
+      cy.get('tbody tr')
+        .first()
+        .within(($list) => {
+          cy.get('button').contains('visibility').click();
+        });
+
+      validateQuestion(
+        'Cypress Question Example - 01',
+        'Cypress Question Example - Content - 01',
+        [1,2,3,4]
+      );
+
+      cy.get('button').contains('close').click();
+  });
+
+  it('Can view question (with click)', function () {
+      cy.get('[data-cy="questionTitleGrid"]').first().click();
+
+      validateQuestion(
+        'Cypress Question Example - 01',
+        'Cypress Question Example - Content - 01',
+        [1,2,3,4]
+      );
+
+      cy.get('button').contains('close').click();
   });
 
   it('Can view question (with button)', function () {
