@@ -52,6 +52,7 @@ export abstract class QuestionFactory {
     }
   }
 
+
   abstract createEmptyQuestionDetails(): QuestionDetails;
   abstract createQuestionDetails(question: any): QuestionDetails;
   abstract createAnswerDetails(question: any): AnswerDetails;

@@ -12,6 +12,7 @@ export default class OpenAnswerQuestionDetails extends QuestionDetails {
     }
   }
 
+
   setAsNew(): void {
   }
 }
