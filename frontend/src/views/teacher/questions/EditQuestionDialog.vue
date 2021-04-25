@@ -82,6 +82,7 @@ import { Component, Model, Prop, Vue, Watch } from 'vue-property-decorator';
 import Question from '@/models/management/Question';
 import RemoteServices from '@/services/RemoteServices';
 import MultipleChoiceCreate from '@/components/multiple-choice/MultipleChoiceCreate.vue';
+import OpenAnswerCreate from '@/components/open-answer/OpenAnswerCreate.vue';
 import CodeFillInCreate from '@/components/code-fill-in/CodeFillInCreate.vue';
 import CodeOrderCreate from '@/components/code-order/CodeOrderCreate.vue';
 import { QuestionTypes, QuestionFactory } from '@/services/QuestionHelpers';
@@ -91,6 +92,7 @@ import { QuestionTypes, QuestionFactory } from '@/services/QuestionHelpers';
     multiple_choice: MultipleChoiceCreate,
     code_fill_in: CodeFillInCreate,
     code_order: CodeOrderCreate,
+    open_answer: OpenAnswerCreate,
   },
 })
 export default class EditQuestionDialog extends Vue {
