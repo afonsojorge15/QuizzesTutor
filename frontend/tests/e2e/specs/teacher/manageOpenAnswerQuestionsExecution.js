@@ -123,5 +123,30 @@ describe('Manage Open Answer Questions Walk-through', () => {
     );
   });
 
+  it('Can view question (with button)', function () {
+        cy.get('tbody tr')
+          .first()
+          .within(($list) => {
+            cy.get('button').contains('visibility').click();
+          });
+
+        validateQuestion(
+          'Cypress Question Example - 01',
+          'Cypress Question Example - Content - 01'
+        );
+
+        cy.get('button').contains('close').click();
+      });
+
+      it('Can view question (with click)', function () {
+        cy.get('[data-cy="questionTitleGrid"]').first().click();
+
+        validateQuestion(
+          'Cypress Question Example - 01',
+          'Cypress Question Example - Content - 01'
+        );
+
+        cy.get('button').contains('close').click();
+      });
 
 });
