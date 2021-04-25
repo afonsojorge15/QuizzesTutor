@@ -128,3 +128,9 @@ Cypress.Commands.add('cleanCodeFillInQuestionsByName', questionName => {
                 , det AS (DELETE FROM question_details WHERE question_id in (SELECT question_id FROM toDelete))
               DELETE FROM questions WHERE id IN (SELECT question_id FROM toDelete);`);
 });
+
+Cypress.Commands.add('cleanOpenAnswerQuestionsByName', questionName => {
+  dbCommand(`WITH toDelete AS (SELECT qt.id as question_id FROM questions qt JOIN question_details qd ON qd.question_id = qt.id and qd.question_type='open_answer' where title like '%${questionName}%')
+                  , det AS (DELETE FROM question_details WHERE question_id in (SELECT question_id FROM toDelete))
+                DELETE FROM questions WHERE id IN (SELECT question_id FROM toDelete);`);
+});
