@@ -1,5 +1,6 @@
 import QuestionDetails from '@/models/management/questions/QuestionDetails';
 import MultipleChoiceQuestionDetails from '@/models/management/questions/MultipleChoiceQuestionDetails';
+import OpenAnswerQuestionDetails from '@/models/management/questions/OpenAnswerQuestionDetails';
 import MultipleChoiceAnswerDetails from '@/models/management/questions/MultipleChoiceAnswerDetails';
 import CodeFillInQuestionDetails from '@/models/management/questions/CodeFillInQuestionDetails';
 import CodeFillInAnswerDetails from '@/models/management/questions/CodeFillInAnswerDetails';
@@ -24,6 +25,7 @@ export enum QuestionTypes {
   MultipleChoice = 'multiple_choice',
   CodeFillIn = 'code_fill_in',
   CodeOrder = 'code_order',
+  OpenAnswer = 'open_answer'
 }
 
 export function convertToLetter(number: number | null) {
@@ -39,6 +41,8 @@ export abstract class QuestionFactory {
     switch (type) {
       case QuestionTypes.MultipleChoice:
         return new MultipleChoiceQuestionFactory();
+      case QuestionTypes.OpenAnswer:
+        return new OpenAnswerQuestionFactory();
       case QuestionTypes.CodeFillIn:
         return new CodeFillInQuestionFactory();
       case QuestionTypes.CodeOrder:
@@ -47,6 +51,7 @@ export abstract class QuestionFactory {
         throw new Error('Unknown question type.');
     }
   }
+
 
   abstract createEmptyQuestionDetails(): QuestionDetails;
   abstract createQuestionDetails(question: any): QuestionDetails;
@@ -58,6 +63,29 @@ export abstract class QuestionFactory {
   abstract createStatementCorrectAnswerDetails(
     details: any
   ): StatementCorrectAnswerDetails;
+}
+
+class OpenAnswerQuestionFactory extends QuestionFactory {
+    createEmptyQuestionDetails(): QuestionDetails {
+      return new OpenAnswerQuestionDetails();
+    }
+    createQuestionDetails(details: any): QuestionDetails {
+      return new OpenAnswerQuestionDetails(details);
+    }
+    createAnswerDetails(details: any): AnswerDetails {
+      throw new Error('Method not implemented.')
+    }
+    createStatementQuestionDetails(details: any): StatementQuestionDetails {
+      throw new Error('Method not implemented.')
+    }
+    createStatementAnswerDetails(details: any): StatementAnswerDetails {
+      throw new Error('Method not implemented.')
+    }
+    createStatementCorrectAnswerDetails(
+      details: any
+    ): StatementCorrectAnswerDetails {
+       throw new Error('Method not implemented.')
+    }
 }
 
 class MultipleChoiceQuestionFactory extends QuestionFactory {
