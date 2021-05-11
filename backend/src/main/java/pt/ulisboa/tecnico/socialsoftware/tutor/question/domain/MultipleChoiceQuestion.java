@@ -65,6 +65,16 @@ public class MultipleChoiceQuestion extends QuestionDetails {
                 .orElse(null);
     }
 
+    public List<OptionDto> getCorrectOptions() {
+        List<OptionDto> list = new ArrayList<>();
+        for(Option option: this.getOptions()){
+            if(option.isCorrect()){
+                list.add(new OptionDto(option));
+            }
+        }
+        return list;
+    }
+
     public void update(MultipleChoiceQuestionDto questionDetails) {
         setOptions(questionDetails.getOptions());
     }
