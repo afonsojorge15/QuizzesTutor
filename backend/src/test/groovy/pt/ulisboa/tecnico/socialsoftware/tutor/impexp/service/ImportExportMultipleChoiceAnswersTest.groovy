@@ -39,6 +39,7 @@ class ImportExportMultipleChoiceAnswersTest extends SpockTest {
         option.setContent(OPTION_1_CONTENT)
         option.setCorrect(true)
         option.setSequence(0)
+        option.setRelevance(5)
         option.setQuestionDetails(questionDetails)
         optionRepository.save(option)
 
@@ -95,6 +96,17 @@ class ImportExportMultipleChoiceAnswersTest extends SpockTest {
         questionAnswerRepository.findAll().size() == 1
         def questionAnswerResult = questionAnswerRepository.findAll().get(0)
         questionAnswerResult.getTimeTaken() == 1
+
+        questionRepository.findQuestions(externalCourse.getId()).size() == 1
+        def questionResult = questionService.findQuestions(externalCourse.getId()).get(0)
+        questionResult.getKey() == null
+        questionResult.getTitle() == QUESTION_1_TITLE
+        questionResult.getContent() == QUESTION_1_CONTENT
+        questionResult.getStatus() == Question.Status.AVAILABLE.name()
+        questionResult.getQuestionDetailsDto().getOptions().size() == 1
+        def optionOneResult = questionResult.getQuestionDetailsDto().getOptions().get(0)
+        optionOneResult.getRelevance() == 5
+        optionOneResult.getContent() == OPTION_1_CONTENT
     }
 
     @TestConfiguration

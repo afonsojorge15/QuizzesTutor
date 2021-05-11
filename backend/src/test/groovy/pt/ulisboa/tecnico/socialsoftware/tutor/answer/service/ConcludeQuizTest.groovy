@@ -62,7 +62,8 @@ class ConcludeQuizTest extends SpockTest {
 
         optionKO = new Option()
         optionKO.setContent("Option Content")
-        optionKO.setCorrect(false)
+        optionKO.setCorrect(true)
+        optionKO.setRelevance(5)
         optionKO.setSequence(0)
         optionKO.setQuestionDetails(questionDetails)
         optionRepository.save(optionKO)
@@ -70,6 +71,7 @@ class ConcludeQuizTest extends SpockTest {
         optionOk = new Option()
         optionOk.setContent("Option Content")
         optionOk.setCorrect(true)
+        optionOk.setRelevance(5)
         optionOk.setSequence(1)
         optionOk.setQuestionDetails(questionDetails)
         optionRepository.save(optionOk)
@@ -108,7 +110,7 @@ class ConcludeQuizTest extends SpockTest {
         correctAnswers.size() == 1
         def correctAnswerDto = correctAnswers.get(0)
         correctAnswerDto.getSequence() == 0
-        correctAnswerDto.getCorrectAnswerDetails().getCorrectOptionId() == optionOk.getId()
+        correctAnswerDto.getCorrectAnswerDetails().getCorrectOptionId() == optionKO.getId()
     }
 
     def 'conclude quiz IN_CLASS without answering, before conclusionDate'() {
@@ -178,7 +180,7 @@ class ConcludeQuizTest extends SpockTest {
         correctAnswers.size() == 1
         def correctAnswerDto = correctAnswers.get(0)
         correctAnswerDto.getSequence() == 0
-        correctAnswerDto.getCorrectAnswerDetails().getCorrectOptionId() == optionOk.getId()
+        correctAnswerDto.getCorrectAnswerDetails().getCorrectOptions().size() == 2
     }
 
     def 'conclude quiz without answering, before availableDate'() {
@@ -265,7 +267,7 @@ class ConcludeQuizTest extends SpockTest {
         and: 'the return value is OK'
         correctAnswers.size() == 0
     }
-    
+
     @TestConfiguration
     static class LocalBeanConfiguration extends BeanConfiguration {}
 }
