@@ -19,7 +19,7 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthUser
 import spock.lang.Unroll
 
 @DataJpaTest
-class GetSolvedMultipleChoiceQuizzesTest extends SpockTest{
+class MultipleChoiceQuestionStudentSeeQuizResultTest extends SpockTest{
     def user
     def courseDto
     def question
