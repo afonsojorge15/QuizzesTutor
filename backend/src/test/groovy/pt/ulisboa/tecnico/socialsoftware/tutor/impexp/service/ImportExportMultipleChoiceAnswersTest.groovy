@@ -112,7 +112,6 @@ class ImportExportMultipleChoiceAnswersTest extends SpockTest {
         questionResult.getContent() == QUESTION_1_CONTENT
         questionResult.getStatus() == Question.Status.AVAILABLE.name()
         questionResult.getQuestionDetailsDto().getOptions().size() == 2
-        print(questionResult.getQuestionDetailsDto().getCorrectAnswers())
         def optionOneResult = questionResult.getQuestionDetailsDto().getOptions().get(0)
         optionOneResult.isCorrect()
         optionOneResult.getRelevance() == 5
