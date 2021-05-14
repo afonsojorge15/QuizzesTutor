@@ -21,7 +21,7 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.*;
 @DiscriminatorValue(Question.QuestionTypes.OPEN_ANSWER_QUESTION)
 public class OpenAnswerQuestion extends QuestionDetails {
 
-
+    @Column(columnDefinition = "TEXT")
     private String _answer="";
 
     public OpenAnswerQuestion(Question question, OpenAnswerQuestionDto openAnswerQuestionDto) {
@@ -44,8 +44,6 @@ public class OpenAnswerQuestion extends QuestionDetails {
         this._answer = answer;
     }
 
-
-
     public String getAnswer(){
         return this._answer;
     }
@@ -58,7 +56,7 @@ public class OpenAnswerQuestion extends QuestionDetails {
 
     @Override
     public String getCorrectAnswerRepresentation() {
-        return null;
+        return _answer;
     }
 
     @Override
@@ -66,27 +64,25 @@ public class OpenAnswerQuestion extends QuestionDetails {
         return null;
     }
 
-
     @Override
     public void accept(Visitor visitor) {
         visitor.visitQuestionDetails(this);
     }
 
-
     @Override
     public CorrectAnswerDetailsDto getCorrectAnswerDetailsDto() {
-        return null;
+        return new OpenAnswerCorrectAnswerDto(this);
     }
 
     @Override
     public StatementQuestionDetailsDto getStatementQuestionDetailsDto() {
-        return null;
+        return new OpenAnswerStatementQuestionDetailsDto(this);
     }
 
     @Override
 
     public StatementAnswerDetailsDto getEmptyStatementAnswerDetailsDto() {
-        return null;
+        return new OpenAnswerStatementAnswerDetailsDto();
     }
 
     @Override
