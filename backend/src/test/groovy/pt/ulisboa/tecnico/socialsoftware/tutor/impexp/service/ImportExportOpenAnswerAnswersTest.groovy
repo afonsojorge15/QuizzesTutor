@@ -3,21 +3,20 @@ package pt.ulisboa.tecnico.socialsoftware.tutor.impexp.service
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.BeanConfiguration
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.MultipleChoiceAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.OpenAnswerAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.auth.domain.AuthUser
 import pt.ulisboa.tecnico.socialsoftware.tutor.utils.DateHandler
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.MultipleChoiceQuestion
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.OpenAnswerQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
 
 @DataJpaTest
-class ImportExportMultipleChoiceAnswersTest extends SpockTest {
+class ImportExportOpenAnswerAnswersTest extends SpockTest {
     def quizAnswer
     def questionAnswer
 
@@ -30,26 +29,10 @@ class ImportExportMultipleChoiceAnswersTest extends SpockTest {
         question.setTitle(QUESTION_1_TITLE)
         question.setContent(QUESTION_1_CONTENT)
         question.setStatus(Question.Status.AVAILABLE)
-        def questionDetails = new MultipleChoiceQuestion()
+        def questionDetails = new OpenAnswerQuestion()
         question.setQuestionDetails(questionDetails)
         questionDetailsRepository.save(questionDetails)
         questionRepository.save(question)
-
-        Option option = new Option()
-        option.setContent(OPTION_1_CONTENT)
-        option.setCorrect(true)
-        option.setSequence(0)
-        option.setRelevance(5)
-        option.setQuestionDetails(questionDetails)
-        optionRepository.save(option)
-
-        Option option1 = new Option()
-        option1.setContent(OPTION_1_CONTENT)
-        option1.setCorrect(true)
-        option1.setSequence(2)
-        option1.setRelevance(3)
-        option1.setQuestionDetails(questionDetails)
-        optionRepository.save(option1)
 
         Quiz quiz = new Quiz()
         quiz.setKey(1)
@@ -77,7 +60,8 @@ class ImportExportMultipleChoiceAnswersTest extends SpockTest {
         quizAnswerRepository.save(quizAnswer)
 
         questionAnswer = new QuestionAnswer(quizAnswer, quizQuestion, 1, 0)
-        def answer = new MultipleChoiceAnswer(questionAnswer, option);
+        def answer = new OpenAnswerAnswer(questionAnswer, ANSWER_1_CONTENT);
+        answer.setAnswer(ANSWER_1_CONTENT)
         questionAnswer.setAnswerDetails(answer)
         questionAnswerRepository.save(questionAnswer)
         answerDetailsRepository.save(answer)
@@ -111,15 +95,7 @@ class ImportExportMultipleChoiceAnswersTest extends SpockTest {
         questionResult.getTitle() == QUESTION_1_TITLE
         questionResult.getContent() == QUESTION_1_CONTENT
         questionResult.getStatus() == Question.Status.AVAILABLE.name()
-        questionResult.getQuestionDetailsDto().getOptions().size() == 2
-        def optionOneResult = questionResult.getQuestionDetailsDto().getOptions().get(0)
-        optionOneResult.isCorrect()
-        optionOneResult.getRelevance() == 5
-        optionOneResult.getContent() == OPTION_1_CONTENT
-        def optionOneResult1 = questionResult.getQuestionDetailsDto().getOptions().get(1)
-        optionOneResult1.isCorrect()
-        optionOneResult1.getRelevance() == 3
-        optionOneResult1.getContent() == OPTION_1_CONTENT
+        questionResult.getQuestionDetailsDto().getAnswer().size() == 0
     }
 
     @TestConfiguration

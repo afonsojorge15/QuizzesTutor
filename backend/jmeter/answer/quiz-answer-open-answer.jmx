@@ -310,7 +310,6 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-	&quot;id&quot;:null,&#xd;
 	&quot;title&quot;:&quot;Question Title ${counter_value}&quot;,&#xd;
 	&quot;status&quot;:&quot;AVAILABLE&quot;,&#xd;
 	&quot;content&quot;:&quot;Question Content ${counter_value}&quot;,&#xd;
@@ -318,13 +317,8 @@
 	&quot;sequence&quot;:null,&#xd;
 	&quot;questionDetailsDto&quot;:&#xd;
 	{&#xd;
-	&quot;options&quot;:[&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option A&quot;,&quot;correct&quot;:true},&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option B&quot;,&quot;correct&quot;:true},&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option C&quot;,&quot;correct&quot;:false},&#xd;
-		{&quot;id&quot;:null,&quot;content&quot;:&quot;Option D&quot;,&quot;correct&quot;:false}&#xd;
-	],&#xd;
-	&quot;type&quot;: &quot;multiple_choice&quot;&#xd;
+	&quot;answer&quot;:&quot;answer&quot;,&#xd;
+	&quot;type&quot;: &quot;open_answer&quot;&#xd;
 	},&#xd;
 	&quot;topics&quot;:[],&#xd;
 	&quot;creationDate&quot;:&quot;-&quot;&#xd;
@@ -423,7 +417,7 @@ for (int i = 1; i &lt;= numberOfQuestions; i++) {
 	result.append(vars.get(&quot;question_id_&quot;+i));
 	result.append(&quot;,  \&quot;sequence\&quot;: &quot;);
 	result.append(i);
-	result.append(&quot;}&quot;);	
+	result.append(&quot;}&quot;);
 	if (i != numberOfQuestions) {
 		result.append(&quot;,&quot;);
     		result.append(newline);
@@ -686,9 +680,9 @@ vars.put(&quot;questions&quot;, result.toString());</stringProp>
               <stringProp name="HTTPSampler.response_timeout"></stringProp>
             </HTTPSamplerProxy>
             <hashTree>
-              <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Get option id" enabled="true">
-                <stringProp name="JSONPostProcessor.referenceNames">option_id</stringProp>
-                <stringProp name="JSONPostProcessor.jsonPathExprs">$.questionDetails.options[0].optionId</stringProp>
+              <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Get answer" enabled="true">
+                <stringProp name="JSONPostProcessor.referenceNames">answer</stringProp>
+                <stringProp name="JSONPostProcessor.jsonPathExprs">$.questionDetails.answer</stringProp>
                 <stringProp name="JSONPostProcessor.match_numbers">-1</stringProp>
               </JSONPostProcessor>
               <hashTree/>
@@ -701,8 +695,8 @@ vars.put(&quot;questions&quot;, result.toString());</stringProp>
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
 	&quot;answerDetails&quot;: {&#xd;
-		&quot;optionId&quot;:${option_id_1},&#xd;
-		&quot;type&quot;: &quot;multiple_choice&quot;&#xd;
+		&quot;answer&quot;:&quot;answer&quot;,&#xd;
+		&quot;type&quot;: &quot;open_answer&quot;&#xd;
 	},&#xd;
 	&quot;timeTaken&quot;:1278,&#xd;
 	&quot;questionAnswerId&quot;:${__V(question_answer_id_${question_number})},&#xd;
@@ -788,7 +782,7 @@ for (int i = 1; i &lt;= numberOfQuestions; i++) {
 	result.append(i);
 	result.append(&quot;,  \&quot;questionAnswerId\&quot;: &quot;);
 	result.append(vars.get(&quot;question_answer_id_&quot;+i));
-	result.append(&quot;}&quot;);	
+	result.append(&quot;}&quot;);
 	if (i != numberOfQuestions) {
 		result.append(&quot;,&quot;);
     		result.append(newline);
@@ -1170,3 +1164,5 @@ vars.put(&quot;answers&quot;, result.toString());</stringProp>
     </hashTree>
   </hashTree>
 </jmeterTestPlan>
+
+

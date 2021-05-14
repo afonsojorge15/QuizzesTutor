@@ -7,10 +7,10 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.MultipleChoiceQue
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUESTION_OPTION_MISMATCH;
 
@@ -20,6 +20,9 @@ public class MultipleChoiceAnswer extends AnswerDetails {
     @ManyToOne
     @JoinColumn(name = "option_id")
     private Option option;
+    @OneToMany
+    @JoinColumn(name = "option_id")
+    private List<Option> options = new ArrayList<>();
 
     public MultipleChoiceAnswer() {
         super();
@@ -34,16 +37,22 @@ public class MultipleChoiceAnswer extends AnswerDetails {
         this.setOption(option);
     }
 
+
     public Option getOption() {
         return option;
     }
 
+    public List<Option> getOptions() {
+        return options;
+    }
+
     public void setOption(Option option) {
         this.option = option;
-
+        this.options.add(option);
         if (option != null)
             option.addQuestionAnswer(this);
     }
+
 
     public void setOption(MultipleChoiceQuestion question, MultipleChoiceStatementAnswerDetailsDto multipleChoiceStatementAnswerDetailsDto) {
         if (multipleChoiceStatementAnswerDetailsDto.getOptionId() != null) {

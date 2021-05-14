@@ -4,16 +4,15 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.TestConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.BeanConfiguration
 import pt.ulisboa.tecnico.socialsoftware.tutor.SpockTest
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.MultipleChoiceAnswer
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.OpenAnswerAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuizAnswer
 import pt.ulisboa.tecnico.socialsoftware.tutor.utils.DateHandler
 import pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.TutorException
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.MultipleChoiceQuestion
-import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.OpenAnswerQuestion
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Question
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.Quiz
 import pt.ulisboa.tecnico.socialsoftware.tutor.quiz.domain.QuizQuestion
-import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.MultipleChoiceStatementAnswerDetailsDto
+import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.OpenAnswerStatementAnswerDetailsDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.StatementAnswerDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.dto.StatementQuizDto
 import pt.ulisboa.tecnico.socialsoftware.tutor.user.domain.User
@@ -23,15 +22,17 @@ import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QU
 import static pt.ulisboa.tecnico.socialsoftware.tutor.exceptions.ErrorMessage.QUIZ_NO_LONGER_AVAILABLE
 
 @DataJpaTest
-class ConcludeQuizTest extends SpockTest {
+class OpenAnswerQuestionStudentAnswerQuizTest extends SpockTest {
 
     def user
     def quizQuestion
-    def optionOk
-    def optionKO
     def quizAnswer
     def date
     def quiz
+    def courseDto
+    def question
+    def answer
+
 
     def setup() {
         createExternalCourseAndExecution()
@@ -48,31 +49,20 @@ class ConcludeQuizTest extends SpockTest {
         quiz.setAvailableDate(DateHandler.now())
         quizRepository.save(quiz)
 
-        def question = new Question()
-        question.setKey(1)
-        question.setTitle("Question Title")
+        question = new Question()
         question.setCourse(externalCourse)
-        def questionDetails = new MultipleChoiceQuestion()
+        question.setKey(1)
+        question.setTitle(QUESTION_1_TITLE)
+        question.setContent(QUESTION_1_CONTENT)
+        question.setStatus(Question.Status.AVAILABLE)
+        def questionDetails = new OpenAnswerQuestion()
+        questionDetails.setAnswer(ANSWER_1_CONTENT)
         question.setQuestionDetails(questionDetails)
         questionDetailsRepository.save(questionDetails)
         questionRepository.save(question)
 
         quizQuestion = new QuizQuestion(quiz, question, 0)
         quizQuestionRepository.save(quizQuestion)
-
-        optionKO = new Option()
-        optionKO.setContent("Option Content")
-        optionKO.setCorrect(false)
-        optionKO.setSequence(0)
-        optionKO.setQuestionDetails(questionDetails)
-        optionRepository.save(optionKO)
-
-        optionOk = new Option()
-        optionOk.setContent("Option Content")
-        optionOk.setCorrect(true)
-        optionOk.setSequence(1)
-        optionOk.setQuestionDetails(questionDetails)
-        optionRepository.save(optionOk)
 
         date = DateHandler.now()
 
@@ -108,7 +98,7 @@ class ConcludeQuizTest extends SpockTest {
         correctAnswers.size() == 1
         def correctAnswerDto = correctAnswers.get(0)
         correctAnswerDto.getSequence() == 0
-        correctAnswerDto.getCorrectAnswerDetails().getCorrectOptionId() == optionOk.getId()
+        correctAnswerDto.getCorrectAnswerDetails().getCorrectAnswer() == ANSWER_1_CONTENT
     }
 
     def 'conclude quiz IN_CLASS without answering, before conclusionDate'() {
@@ -153,9 +143,9 @@ class ConcludeQuizTest extends SpockTest {
         statementQuizDto.id = quiz.getId()
         statementQuizDto.quizAnswerId = quizAnswer.getId()
         def statementAnswerDto = new StatementAnswerDto()
-        def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
-        statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
+        def openAnswerAnswerDto = new OpenAnswerStatementAnswerDetailsDto()
+        openAnswerAnswerDto.setAnswer(ANSWER_1_CONTENT)
+        statementAnswerDto.setAnswerDetails(openAnswerAnswerDto)
         statementAnswerDto.setSequence(0)
         statementAnswerDto.setTimeTaken(100)
         statementAnswerDto.setQuestionAnswerId(quizAnswer.getQuestionAnswers().get(0).getId())
@@ -172,13 +162,12 @@ class ConcludeQuizTest extends SpockTest {
         quizAnswer.getQuestionAnswers().contains(questionAnswer)
         questionAnswer.getQuizQuestion() == quizQuestion
         quizQuestion.getQuestionAnswers().contains(questionAnswer)
-        ((MultipleChoiceAnswer) questionAnswer.getAnswerDetails()).getOption() == optionOk
-        optionOk.getQuestionAnswers().contains(questionAnswer.getAnswerDetails())
+        ((OpenAnswerAnswer) questionAnswer.getAnswerDetails()).getAnswer() == ANSWER_1_CONTENT
         and: 'the return value is OK'
         correctAnswers.size() == 1
         def correctAnswerDto = correctAnswers.get(0)
         correctAnswerDto.getSequence() == 0
-        correctAnswerDto.getCorrectAnswerDetails().getCorrectOptionId() == optionOk.getId()
+        correctAnswerDto.getCorrectAnswerDetails().getCorrectAnswer() == ANSWER_1_CONTENT
     }
 
     def 'conclude quiz without answering, before availableDate'() {
@@ -242,9 +231,9 @@ class ConcludeQuizTest extends SpockTest {
         statementQuizDto.id = quiz.getId()
         statementQuizDto.quizAnswerId = quizAnswer.getId()
         def statementAnswerDto = new StatementAnswerDto()
-        def multipleChoiceAnswerDto = new MultipleChoiceStatementAnswerDetailsDto()
-        multipleChoiceAnswerDto.setOptionId(optionOk.getId())
-        statementAnswerDto.setAnswerDetails(multipleChoiceAnswerDto)
+        def openAnswerAnswerDto = new OpenAnswerStatementAnswerDetailsDto()
+        openAnswerAnswerDto.setAnswer(ANSWER_1_CONTENT)
+        statementAnswerDto.setAnswerDetails(openAnswerAnswerDto)
         statementAnswerDto.setSequence(0)
         statementAnswerDto.setTimeTaken(100)
         statementAnswerDto.setQuestionAnswerId(quizAnswer.getQuestionAnswers().get(0).getId())
