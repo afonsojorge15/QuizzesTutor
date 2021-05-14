@@ -33,6 +33,7 @@ class OpenAnswerQuestionStudentAnswerQuizTest extends SpockTest {
     def question
     def answer
 
+
     def setup() {
         createExternalCourseAndExecution()
 
