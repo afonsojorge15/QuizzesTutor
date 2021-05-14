@@ -3,6 +3,7 @@ export default class Option {
   sequence!: number | null;
   content: string = '';
   correct: boolean = false;
+  relevance!: number;
 
   constructor(jsonObj?: Option) {
     if (jsonObj) {
@@ -10,6 +11,7 @@ export default class Option {
       this.sequence = jsonObj.sequence;
       this.content = jsonObj.content;
       this.correct = jsonObj.correct;
+      this.relevance = jsonObj.relevance;
     }
   }
 }
