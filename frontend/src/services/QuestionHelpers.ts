@@ -1,6 +1,7 @@
 import QuestionDetails from '@/models/management/questions/QuestionDetails';
 import MultipleChoiceQuestionDetails from '@/models/management/questions/MultipleChoiceQuestionDetails';
 import OpenAnswerQuestionDetails from '@/models/management/questions/OpenAnswerQuestionDetails';
+import OpenAnswerAnswerDetails from '@/models/management/questions/OpenAnswerAnswerDetails';
 import MultipleChoiceAnswerDetails from '@/models/management/questions/MultipleChoiceAnswerDetails';
 import CodeFillInQuestionDetails from '@/models/management/questions/CodeFillInQuestionDetails';
 import CodeFillInAnswerDetails from '@/models/management/questions/CodeFillInAnswerDetails';
@@ -20,6 +21,9 @@ import CodeOrderAnswerDetails from '@/models/management/questions/CodeOrderAnswe
 import CodeOrderStatementQuestionDetails from '@/models/statement/questions/CodeOrderStatementQuestionDetails';
 import CodeOrderStatementAnswerDetails from '@/models/statement/questions/CodeOrderStatementAnswerDetails';
 import CodeOrderStatementCorrectAnswerDetails from '@/models/statement/questions/CodeOrderStatementCorrectAnswerDetails';
+import OpenAnswerStatementQuestionDetails from '@/models/statement/questions/OpenAnswerStatementQuestionDetails';
+import OpenAnswerStatementAnswerDetails from '@/models/statement/questions/OpenAnswerStatementAnswerDetails';
+import OpenAnswerStatementCorrectAnswerDetails from '@/models/statement/questions/OpenAnswerStatementCorrectAnswerDetails';
 
 export enum QuestionTypes {
   MultipleChoice = 'multiple_choice',
@@ -52,7 +56,6 @@ export abstract class QuestionFactory {
     }
   }
 
-
   abstract createEmptyQuestionDetails(): QuestionDetails;
   abstract createQuestionDetails(question: any): QuestionDetails;
   abstract createAnswerDetails(question: any): AnswerDetails;
@@ -73,18 +76,18 @@ class OpenAnswerQuestionFactory extends QuestionFactory {
       return new OpenAnswerQuestionDetails(details);
     }
     createAnswerDetails(details: any): AnswerDetails {
-      throw new Error('Method not implemented.')
+        return new OpenAnswerAnswerDetails(details);
     }
     createStatementQuestionDetails(details: any): StatementQuestionDetails {
-      throw new Error('Method not implemented.')
+       return new OpenAnswerStatementQuestionDetails(details);
     }
     createStatementAnswerDetails(details: any): StatementAnswerDetails {
-      throw new Error('Method not implemented.')
+       return new OpenAnswerStatementAnswerDetails(details);
     }
     createStatementCorrectAnswerDetails(
       details: any
     ): StatementCorrectAnswerDetails {
-       throw new Error('Method not implemented.')
+        return new OpenAnswerStatementCorrectAnswerDetails(details);
     }
 }
 

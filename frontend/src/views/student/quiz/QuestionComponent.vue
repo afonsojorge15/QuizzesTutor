@@ -41,12 +41,14 @@ import MultipleChoiceAnswer from '@/components/multiple-choice/MultipleChoiceAns
 import StatementAnswer from '@/models/statement/StatementAnswer';
 import CodeFillInAnswer from '@/components/code-fill-in/CodeFillInAnswer.vue';
 import CodeOrderAnswer from '@/components/code-order/CodeOrderAnswer.vue';
+import OpenAnswerAnswer from '@/components/open-answer/OpenAnswerAnswer.vue';
 
 @Component({
   components: {
     multiple_choice: MultipleChoiceAnswer,
     code_fill_in: CodeFillInAnswer,
     code_order: CodeOrderAnswer,
+    open_answer: OpenAnswerAnswer,
   },
 })
 export default class QuestionComponent extends Vue {
