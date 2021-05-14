@@ -6,11 +6,16 @@ import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswer;
 import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.MultipleChoiceQuestion;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.MultipleChoiceAnswerItem;
 import pt.ulisboa.tecnico.socialsoftware.tutor.answer.domain.QuestionAnswerItem;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.domain.Option;
+import pt.ulisboa.tecnico.socialsoftware.tutor.question.dto.OptionDto;
 
 import javax.persistence.Transient;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MultipleChoiceStatementAnswerDetailsDto extends StatementAnswerDetailsDto {
     private Integer optionId;
+    private List<OptionDto> options = new ArrayList<>();
 
     public MultipleChoiceStatementAnswerDetailsDto() {
     }
@@ -18,11 +23,18 @@ public class MultipleChoiceStatementAnswerDetailsDto extends StatementAnswerDeta
     public MultipleChoiceStatementAnswerDetailsDto(MultipleChoiceAnswer questionAnswer) {
         if (questionAnswer.getOption() != null) {
             this.optionId = questionAnswer.getOption().getId();
+            for(Option option: questionAnswer.getOptions()){
+                this.options.add(new OptionDto(option));
+            }
         }
     }
 
     public Integer getOptionId() {
         return optionId;
+    }
+
+    public List<OptionDto> getOptions() {
+        return options;
     }
 
     public void setOptionId(Integer optionId) {
@@ -58,6 +70,7 @@ public class MultipleChoiceStatementAnswerDetailsDto extends StatementAnswerDeta
     public String toString() {
         return "MultipleChoiceStatementAnswerDto{" +
                 "optionId=" + optionId +
+                "options= " + options +
                 '}';
     }
 }
